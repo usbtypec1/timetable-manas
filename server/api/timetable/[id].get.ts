@@ -70,7 +70,7 @@ export async function GET(request) {
 
   try {
     const response = await ofetch('http://timetable.manas.edu.kg/department-printer/' + departmentId)
-    const parsedData = parseTimetablePageHtml(response)
+    const parsedData = parseTimetablePageHtml(await response.text())
     return new Response(JSON.stringify(parsedData), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
@@ -86,3 +86,9 @@ export async function GET(request) {
     return new Response(JSON.stringify({ error: 'Unknown error' }), errorOptions)
   }
 }
+
+export default defineEventHandler(async (event) => {
+  const departmentId = getRouterParam(event, 'id')
+  const response = await ofetch('http://timetable.manas.edu.kg/department-printer/' + departmentId)
+  return parseTimetablePageHtml(response)
+})
