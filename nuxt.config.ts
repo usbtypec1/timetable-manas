@@ -15,9 +15,12 @@ export default defineNuxtConfig({
     }
   },
 
-  ssr: false,
+  ssr: true,
 
-  css: ['~/assets/css/main.css'],
+  css: [
+    '~/assets/css/main.css',
+    'primeicons/primeicons.css',
+  ],
 
   postcss: {
     plugins: {

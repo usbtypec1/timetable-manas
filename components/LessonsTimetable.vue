@@ -18,7 +18,7 @@
           <div
             v-for="lesson in data[field]"
             class="shadow-md my-2 rounded px-3 py-2"
-            :class="typeToBackground[lesson.type]"
+            :class="getBackgroundColorByLessonType(lesson.type)"
           >
             <p>{{ courseIdToDepartmentName[lesson.courseId] }}</p>
             <p>{{ lesson.name }}</p>
@@ -36,7 +36,6 @@
 
 <script setup lang="ts">
 import type { PeriodTimetable } from '~/types/timetable'
-import { useDark } from '@vueuse/core'
 
 const props = defineProps<{
   periodTimetables: PeriodTimetable[],
@@ -67,9 +66,13 @@ const columns = [
 ]
 
 const typeToBackground = {
-  1: 'bg-amber-200',
-  2: 'bg-emerald-200',
-  3: 'bg-blue-200',
-  4: 'bg-gray-200',
+  1: 'bg-amber-200 dark:bg-amber-500',
+  2: 'bg-emerald-200 dark:bg-emerald-500',
+  3: 'bg-blue-200 dark:bg-cyan-500',
+  4: 'bg-gray-200 dark:bg-gray-500',
+}
+
+const getBackgroundColorByLessonType = (type: number): string => {
+  return typeToBackground[type] || 'bg-gray-100 dark:bg-gray-500'
 }
 </script>
