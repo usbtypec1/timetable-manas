@@ -65,9 +65,25 @@ const parseTimetablePageHtml = html => {
 }
 
 
-ofetch('http://timetable.manas.edu.kg/department-printer/126', {
-  method: 'GET',
-})
-  .then(response => {
-    console.log(parseTimetablePageHtml(response))
-  })
+export async function GET(request) {
+  const url = new URL(request.url)
+  const departmentId = url.searchParams.get('departmentId')
+
+  try {
+    const response = await ofetch('http://timetable.manas.edu.kg/department-printer/' + departmentId)
+    const parsedData = parseTimetablePageHtml(response)
+    return new Response(JSON.stringify(parsedData), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
+
+  } catch (error) {
+    const errorOptions = {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+    return new Response(JSON.stringify({ error: 'Unknown error' }), errorOptions)
+  }
+}
