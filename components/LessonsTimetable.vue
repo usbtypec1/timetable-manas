@@ -1,9 +1,10 @@
 <template>
   <h3 class="text-3xl font-semibold my-4">Расписание</h3>
   <DataTable
-    :value="values"
+    :value="periodTimetables"
+    show-gridlines
   >
-    <Column field="time" header="Время"/>
+    <Column field="period" header="Время"/>
     <Column
       v-for="{ field, header } in columns"
       :key="field"
@@ -15,14 +16,14 @@
           v-if="(data[field] ?? []).length >= 1"
         >
           <div
-            v-for="{ departmentName, lesson } in data[field]"
+            v-for="lesson in data[field]"
             class="shadow-md my-2 rounded px-3 py-2"
             :class="typeToBackground[lesson.type]"
           >
-            <p>{{ departmentName }}:</p>
+            <p>{{ courseIdToDepartmentName[lesson.courseId] }}</p>
             <p>{{ lesson.name }}</p>
-            <p>{{ lesson.teacher }}</p>
-            <p>{{ lesson.room }}</p>
+            <p>{{ lesson.teacherName }}</p>
+            <p>{{ lesson.location }}</p>
           </div>
         </div>
         <div v-else>
@@ -34,6 +35,14 @@
 </template>
 
 <script setup lang="ts">
+import type { PeriodTimetable } from '~/types/timetable'
+import { useDark } from '@vueuse/core'
+
+const props = defineProps<{
+  periodTimetables: PeriodTimetable[],
+  courseIdToDepartmentName: Record<string, string>,
+}>()
+
 const columns = [
   {
     field: 'monday',
@@ -57,62 +66,10 @@ const columns = [
   },
 ]
 
-const values = [
-  {
-    time: '8:00-8:45',
-    monday: [
-      {
-        departmentName: 'Программная инженерия',
-        lesson: {
-          name: 'Математический анализ',
-          teacher: 'Иванов И.И.',
-          room: 'А-101',
-          type: 2,
-        },
-      },
-      {
-        departmentName: 'Информационные системы',
-        lesson: {
-          name: 'Математический анализ',
-          teacher: 'Иванов И.И.',
-          room: 'А-101',
-          type: 2,
-        },
-      },
-    ],
-    friday: [
-      {
-        departmentName: 'Программная инженерия',
-        lesson: {
-          name: 'Математический анализ',
-          teacher: 'Иванов И.И.',
-          room: 'А-101',
-          type: 2,
-        },
-      },
-    ],
-  },
-  {
-    time: '8:00-8:45',
-    tuesday: [
-      {
-        departmentName: 'Программная инженерия',
-        lesson: {
-          name: 'Математический анализ',
-          teacher: 'Иванов И.И.',
-          room: 'А-101',
-          type: 3,
-        },
-      },
-    ],
-  },
-]
-
 const typeToBackground = {
-  1: 'bg-blue-300',
-  2: 'bg-emerald-300',
-  3: 'bg-amber-300',
-  4: 'bg-gray-300',
+  1: 'bg-amber-200',
+  2: 'bg-emerald-200',
+  3: 'bg-blue-200',
+  4: 'bg-gray-200',
 }
-
 </script>
