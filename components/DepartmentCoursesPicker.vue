@@ -34,6 +34,7 @@ const props = defineProps<{
 }>()
 
 const selectedCourseIds = defineModel<number[]>('selectedCourseIds')
+const selectedDepartments = defineModel<Department[]>('selectedDepartments')
 
 const unselectDepartment = (departmentId: number): void => {
   selectedDepartments.value = selectedDepartments.value.filter((department: any) => department.id !== departmentId)

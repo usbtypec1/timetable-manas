@@ -44,6 +44,7 @@
           :department="department"
           :key="department.id"
           v-model:selected-course-ids="selectedCourseIds"
+          v-model:selected-departments="selectedDepartments"
         />
       </div>
     </div>
