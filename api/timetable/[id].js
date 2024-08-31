@@ -70,7 +70,7 @@ export async function GET(request) {
 
   try {
     const response = await ofetch('http://timetable.manas.edu.kg/department-printer/' + departmentId)
-    const parsedData = parseTimetablePageHtml(await response.text())
+    const parsedData = parseTimetablePageHtml(response)
     return new Response(JSON.stringify(parsedData), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
