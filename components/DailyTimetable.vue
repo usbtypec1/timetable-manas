@@ -78,6 +78,7 @@
 
 <script setup lang="ts">
 import type { PeriodTimetable } from '~/types/timetable'
+import { getWeekdayNumber } from '~/services/time'
 
 const props = defineProps<{
   periodTimetables: PeriodTimetable[],
@@ -112,7 +113,7 @@ const weekdays: Weekday[] = [
   },
 ]
 
-const weekday = ref<Weekday>()
+const weekday = ref<Weekday>([weekdays[getWeekdayNumber()]])
 
 interface TextSize {
   label: string
