@@ -20,14 +20,27 @@
       </div>
     </div>
 
-    <LessonsTimetableSkeleton
-      v-if="status === 'pending'"
-    />
-    <LessonsTimetable
-      v-else-if="status === 'success'"
-      :period-timetables="data"
-      :course-id-to-department-name="courseIdToDepartmentName"
-    />
+    <!--    <LessonsTimetableSkeleton-->
+    <!--      v-if="status === 'pending'"-->
+    <!--    />-->
+
+    <template v-if="width <= 920">
+      <DailyTimetable
+        v-if="status === 'success'"
+        :period-timetables="data"
+        :course-id-to-department-name="courseIdToDepartmentName"
+      />
+      <DailyTimetableSkeleton v-if="status === 'pending'"/>
+    </template>
+    <template v-else>
+      <LessonsTimetable
+        v-if="status === 'success'"
+        :period-timetables="data"
+        :course-id-to-department-name="courseIdToDepartmentName"
+        class="md:visible hidden"
+      />
+      <LessonsTimetableSkeleton v-if="status === 'pending'"/>
+    </template>
   </div>
 </template>
 
@@ -36,11 +49,14 @@ import faculties from '~/assets/faculties.json'
 import { useDebounceFn } from '@vueuse/core'
 import DepartmentCoursesPicker from '~/components/DepartmentCoursesPicker.vue'
 import type { Department } from '~/types/departments'
+import { useWindowSize } from '@vueuse/core'
 import LessonsTimetableSkeleton from '~/components/skeletons/LessonsTimetableSkeleton.vue'
+import DailyTimetableSkeleton from '~/components/skeletons/DailyTimetableSkeleton.vue'
 
 const selectedDepartments = ref<Department[]>([])
 const selectedCourseIds = ref<number[]>([])
 
+const { width } = useWindowSize()
 
 const { data, refresh, status } = await useFetch('/api/timetable', {
   query: { courseId: selectedCourseIds },
