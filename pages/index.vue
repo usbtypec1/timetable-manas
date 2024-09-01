@@ -1,44 +1,14 @@
 <template>
   <div class="mx-4 my-5">
     <Title>Манас | Расписание университета</Title>
-    <div class="text-center">
-      <h1 class="text-3xl font-bold my-3">
-        Улучшенное расписание университета Манас
-      </h1>
-      <span class="my-2 text-xl">Наш чат - <a class="text-violet-500" href="https://t.me/studmanas1"
-                                              target="_blank">@studmanas1</a></span>
-      <span>  |  </span>
-      <span class="my-2 text-xl">Наш канал - <a class="text-violet-500" href="https://t.me/manashelp"
-                                                target="_blank">@manashelp</a></span>
-      <p class="my-2 text-xl">Разработчик - <a class="text-violet-500" href="https://t.me/usbtypec" target="_blank">@usbtypec</a>
-      </p>
-    </div>
+    <ContactInfo/>
 
     <div class="flex flex-col md:flex-row gap-x-4 gap-y-2">
-      <div>
-        <Listbox
-          v-model="selectedDepartments"
-          :options="faculties"
-          @change="onChange"
-          multiple
-          optionLabel="name"
-          class="w-full md:w-96"
-          optionGroupLabel="name"
-          optionGroupChildren="departments"
-          filter
-          checkmark
-          filter-placeholder="Поиск по направлению"
-        />
-        <Button
-          v-if="selectedDepartments.length > 0 || data"
-          label="Очистить"
-          outlined
-          icon="pi pi-times"
-          severity="danger"
-          class="w-full mt-2"
-          @click="clearSelectedCourseIdsAndDepartments"
-        />
-      </div>
+      <DepartmentsPickerListbox
+        v-model:selected-departments="selectedDepartments"
+        @clear="clearSelectedCourseIdsAndDepartments"
+        :faculties="faculties"
+      />
       <div class="grow grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 grid-cols-1 gap-x-3 gap-y-2">
         <DepartmentCoursesPicker
           v-for="department in selectedDepartments"
@@ -49,6 +19,7 @@
         />
       </div>
     </div>
+
     <LessonsTimetableSkeleton
       v-if="status === 'pending'"
     />
@@ -62,7 +33,6 @@
 
 <script setup lang="ts">
 import faculties from '~/assets/faculties.json'
-
 import { useDebounceFn } from '@vueuse/core'
 import DepartmentCoursesPicker from '~/components/DepartmentCoursesPicker.vue'
 import type { Department } from '~/types/departments'
