@@ -1,5 +1,6 @@
 <template>
   <div class="mx-4 my-5">
+    <Title>Манас | Расписание университета</Title>
     <div class="text-center">
       <h1 class="text-3xl font-bold my-3">
         Улучшенное расписание университета Манас
@@ -65,6 +66,7 @@ import faculties from '~/assets/faculties.json'
 import { useDebounceFn } from '@vueuse/core'
 import DepartmentCoursesPicker from '~/components/DepartmentCoursesPicker.vue'
 import type { Department } from '~/types/departments'
+import LessonsTimetableSkeleton from '~/components/skeletons/LessonsTimetableSkeleton.vue'
 
 const selectedDepartments = ref<Department[]>([])
 const selectedCourseIds = ref<number[]>([])
