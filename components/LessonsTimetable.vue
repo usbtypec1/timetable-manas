@@ -1,5 +1,11 @@
 <template>
   <h3 class="text-3xl font-semibold my-4">Расписание</h3>
+
+  <DesktopViewToggleSwitch
+    v-if="width <= 920"
+    v-model="forceDesktopView"
+  />
+
   <Inplace class="my-3">
     <template #display>
       <Button text icon="pi pi-info-circle" label="Обозначения цветов карточек"/>
@@ -61,11 +67,17 @@
 
 <script setup lang="ts">
 import type { PeriodTimetable } from '~/types/timetable'
+import { useWindowSize } from '@vueuse/core'
 
 const props = defineProps<{
   periodTimetables: PeriodTimetable[],
   courseIdToDepartmentName: Record<string, string>,
 }>()
+
+
+const { width } = useWindowSize()
+
+const forceDesktopView = defineModel<boolean>('forceDesktopView')
 
 interface TextSize {
   label: string

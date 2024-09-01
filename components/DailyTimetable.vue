@@ -1,5 +1,8 @@
 <template>
   <h3 class="text-3xl font-semibold my-4">Расписание</h3>
+
+  <DesktopViewToggleSwitch v-model="forceDesktopView"/>
+
   <Inplace class="my-3">
     <template #display>
       <Button text icon="pi pi-info-circle" label="Обозначения цветов карточек"/>
@@ -84,6 +87,8 @@ const props = defineProps<{
   periodTimetables: PeriodTimetable[],
   courseIdToDepartmentName: Record<string, string>,
 }>()
+
+const forceDesktopView = defineModel<boolean>('forceDesktopView')
 
 interface Weekday {
   label: string

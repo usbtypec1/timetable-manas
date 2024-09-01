@@ -20,15 +20,12 @@
       </div>
     </div>
 
-    <!--    <LessonsTimetableSkeleton-->
-    <!--      v-if="status === 'pending'"-->
-    <!--    />-->
-
-    <template v-if="width <= 920">
+    <template v-if="width <= 920 && !forceDesktopView">
       <DailyTimetable
         v-if="status === 'success'"
         :period-timetables="data"
         :course-id-to-department-name="courseIdToDepartmentName"
+        v-model:force-desktop-view="forceDesktopView"
       />
       <DailyTimetableSkeleton v-if="status === 'pending'"/>
     </template>
@@ -37,7 +34,7 @@
         v-if="status === 'success'"
         :period-timetables="data"
         :course-id-to-department-name="courseIdToDepartmentName"
-        class="md:visible hidden"
+        v-model:force-desktop-view="forceDesktopView"
       />
       <LessonsTimetableSkeleton v-if="status === 'pending'"/>
     </template>
@@ -57,6 +54,8 @@ const selectedDepartments = ref<Department[]>([])
 const selectedCourseIds = ref<number[]>([])
 
 const { width } = useWindowSize()
+
+const forceDesktopView = ref<boolean>(false)
 
 const { data, refresh, status } = await useFetch('/api/timetable', {
   query: { courseId: selectedCourseIds },
