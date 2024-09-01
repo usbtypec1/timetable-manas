@@ -37,6 +37,9 @@ const selectedCourseIds = defineModel<number[]>('selectedCourseIds')
 const selectedDepartments = defineModel<Department[]>('selectedDepartments')
 
 const unselectDepartment = (departmentId: number): void => {
+  selectedCourseIds.value = selectedCourseIds.value.filter((courseId: number) => {
+    return !props.department.courses.some((course) => course.id === courseId)
+  })
   selectedDepartments.value = selectedDepartments.value.filter((department: any) => department.id !== departmentId)
 }
 </script>

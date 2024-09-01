@@ -1,7 +1,9 @@
 <template>
   <h3 class="text-3xl font-semibold my-4">Расписание</h3>
   <Inplace class="my-3">
-    <template #display>Обозначения цветов карточек</template>
+    <template #display>
+      <Button text icon="pi pi-info-circle" label="Обозначения цветов карточек"/>
+    </template>
     <template #content>
       <div class="my-2">
         <p class="font-semibold text-lg">Обозначения цветов карточек</p>
@@ -12,6 +14,16 @@
       </div>
     </template>
   </Inplace>
+
+  <div class="my-4">
+    <p class="text-md mb-1 font-semibold">Размер таблицы</p>
+    <SelectButton
+      v-model="textSize"
+      :options="textSizeOptions"
+      option-label="label"
+      option-value="value"
+    />
+  </div>
 
   <DataTable
     :value="periodTimetables"
@@ -31,9 +43,9 @@
           <div
             v-for="lesson in data[field]"
             class="shadow-md my-2 rounded px-3 py-2"
-            :class="getBackgroundColorByLessonType(lesson.type)"
+            :class="[getBackgroundColorByLessonType(lesson.type), textSize]"
           >
-            <p>{{ courseIdToDepartmentName[lesson.courseId] }}</p>
+            <p class="font-semibold mb-1">{{ courseIdToDepartmentName[lesson.courseId] }}</p>
             <p>{{ lesson.name }}</p>
             <p>{{ lesson.teacherName }}</p>
             <p>{{ lesson.location }}</p>
@@ -54,6 +66,28 @@ const props = defineProps<{
   periodTimetables: PeriodTimetable[],
   courseIdToDepartmentName: Record<string, string>,
 }>()
+
+interface TextSize {
+  label: string
+  value: string
+}
+
+const textSizeOptions: TextSize[] = [
+  {
+    label: 'Маленький',
+    value: 'text-xs',
+  },
+  {
+    label: 'Средний',
+    value: 'text-sm',
+  },
+  {
+    label: 'Большой',
+    value: 'text-lg',
+  },
+]
+
+const textSize = ref<TextSize>(textSizeOptions[1].value)
 
 const columns = [
   {

@@ -29,13 +29,13 @@
           filter-placeholder="Поиск по направлению"
         />
         <Button
-          v-if="selectedDepartments.length > 0"
+          v-if="selectedDepartments.length > 0 || data"
           label="Очистить"
           outlined
           icon="pi pi-times"
           severity="danger"
           class="w-full mt-2"
-          @click="selectedDepartments = []; status = 'idle'"
+          @click="clearSelectedCourseIdsAndDepartments"
         />
       </div>
       <div class="grow grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 grid-cols-1 gap-x-3 gap-y-2">
@@ -64,8 +64,9 @@ import faculties from '~/assets/faculties.json'
 
 import { useDebounceFn } from '@vueuse/core'
 import DepartmentCoursesPicker from '~/components/DepartmentCoursesPicker.vue'
+import type { Department } from '~/types/departments'
 
-const selectedDepartments = ref([])
+const selectedDepartments = ref<Department[]>([])
 const selectedCourseIds = ref<number[]>([])
 
 
@@ -74,6 +75,14 @@ const { data, refresh, status } = await useFetch('/api/timetable', {
   watch: false,
   immediate: false,
 })
+
+const clearSelectedCourseIdsAndDepartments = (): void => {
+  selectedCourseIds.value = []
+  selectedDepartments.value = []
+  status.value = 'idle'
+  data.value = null
+  console.log(selectedDepartments.value, selectedCourseIds.value)
+}
 
 const debouncedFn = useDebounceFn(refresh, 1000)
 
