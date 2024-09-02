@@ -1,5 +1,11 @@
 <template>
   <h3 class="text-3xl font-semibold my-4">Расписание</h3>
+  <h4
+    v-if="departmentName !== undefined"
+    class="text-xl font-semibold mb-4"
+  >
+    {{ departmentName }}
+  </h4>
 
   <DesktopViewToggleSwitch
     v-if="width <= 920"
@@ -55,7 +61,12 @@
             class="shadow-md my-2 rounded px-3 py-2"
             :class="[getBackgroundColorByLessonType(lesson.type), textSize]"
           >
-            <p class="font-semibold mb-1">{{ courseIdToDepartmentName[lesson.courseId] }}</p>
+            <p
+              v-if="showDepartmentNames"
+              class="font-semibold mb-1"
+            >
+              {{ courseIdToDepartmentName[lesson.courseId] }}
+            </p>
             <p>{{ lesson.name }}</p>
             <p>{{ lesson.teacherName }}</p>
             <p>{{ lesson.location }}</p>
@@ -73,9 +84,12 @@
 import type { PeriodTimetable } from '~/types/timetable'
 import { useWindowSize } from '@vueuse/core'
 
-const props = defineProps<{
+defineProps<{
   periodTimetables: PeriodTimetable[],
   courseIdToDepartmentName: Record<string, string>,
+  departmentName?: string,
+  courseNumber?: number,
+  showDepartmentNames: boolean,
 }>()
 
 

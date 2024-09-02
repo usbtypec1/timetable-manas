@@ -7,6 +7,8 @@
         :period-timetables="data"
         :course-id-to-department-name="courseIdToDepartmentName(faculties)"
         v-model:force-desktop-view="forceDesktopView"
+        :department-name="departmentName"
+        :show-department-names="false"
       />
     </template>
     <template v-else>
@@ -15,6 +17,8 @@
         :period-timetables="data"
         :course-id-to-department-name="courseIdToDepartmentName(faculties)"
         v-model:force-desktop-view="forceDesktopView"
+        :department-name="departmentName"
+        :show-department-names="false"
       />
     </template>
 
@@ -29,13 +33,15 @@
 import { courseIdToDepartmentName } from '~/services/departments'
 import { useWindowSize } from '@vueuse/core'
 import type { PeriodTimetable } from '~/types/timetable'
-import { getFaculties } from '~/server/faculties'
+import { getDepartmentNameByCourseId, getFaculties } from '~/services/faculties'
 
 const { width } = useWindowSize()
 
 const { params } = useRoute()
 
 const courseId = Number(params.id)
+
+const departmentName = getDepartmentNameByCourseId(courseId)
 
 const forceDesktopView = ref<boolean>(false)
 

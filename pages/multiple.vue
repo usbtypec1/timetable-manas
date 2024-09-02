@@ -25,6 +25,7 @@
         :period-timetables="data"
         :course-id-to-department-name="courseIdToDepartmentName"
         v-model:force-desktop-view="forceDesktopView"
+        :show-department-names="true"
       />
       <DailyTimetableSkeleton v-if="status === 'pending'"/>
     </template>
@@ -34,6 +35,7 @@
         :period-timetables="data"
         :course-id-to-department-name="courseIdToDepartmentName"
         v-model:force-desktop-view="forceDesktopView"
+        :show-department-names="true"
       />
       <LessonsTimetableSkeleton v-if="status === 'pending'"/>
     </template>

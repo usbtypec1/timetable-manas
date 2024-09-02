@@ -104,7 +104,7 @@
 </template>
 
 <script setup lang="ts">
-import { getFaculties } from '~/server/faculties'
+import { getFaculties } from '~/services/faculties'
 import type { Department } from '~/types/departments'
 import type { Course } from '~/types/courses'
 
