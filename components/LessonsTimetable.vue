@@ -35,7 +35,11 @@
     :value="periodTimetables"
     show-gridlines
   >
-    <Column field="period" header="Время"/>
+    <Column
+      field="period"
+      header="Время"
+      class="w-1/12"
+    />
     <Column
       v-for="{ field, header } in columns"
       :key="field"
