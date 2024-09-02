@@ -25,7 +25,7 @@
   </Inplace>
 
   <div class="my-4">
-    <p class="text-md mb-1 font-semibold">Размер таблицы</p>
+    <p class="text-sm mb-1 font-semibold">Размер таблицы</p>
     <SelectButton
       v-model="textSize"
       :options="textSizeOptions"
@@ -35,7 +35,7 @@
   </div>
 
   <div class="my-4">
-    <p class="text-md mb-1 font-semibold">День недели</p>
+    <p class="text-sm mb-1 font-semibold">День недели</p>
     <MultiSelect
       v-model="weekday"
       :options="weekdays"
@@ -50,11 +50,12 @@
     v-for="day in weekday"
     :key="day.value"
   >
-    <h3 class="text-3xl mb-2 font-semibold">{{ day.label }}</h3>
+    <h3 class="text-xl my-4 font-semibold">{{ day.label }}</h3>
     <DataTable
       :value="periodTimetables"
       show-gridlines
       class="mb-8"
+      :class="textSize"
     >
       <Column field="period" header="Время" class="w-1/12"/>
       <Column

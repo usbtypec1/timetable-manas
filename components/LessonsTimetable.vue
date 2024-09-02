@@ -40,6 +40,7 @@
   <DataTable
     :value="periodTimetables"
     show-gridlines
+    :class="textSize"
   >
     <Column
       field="period"
@@ -59,7 +60,7 @@
           <div
             v-for="lesson in data[field]"
             class="shadow-md my-2 rounded px-3 py-2"
-            :class="[getBackgroundColorByLessonType(lesson.type), textSize]"
+            :class="[getBackgroundColorByLessonType(lesson.type)]"
           >
             <p
               v-if="showDepartmentNames"
