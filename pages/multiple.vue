@@ -1,7 +1,6 @@
 <template>
   <div class="mx-4 my-5">
-    <Title>Манас | Расписание университета</Title>
-    <ContactInfo/>
+    <Title>Манас | Cравнить расписания</Title>
 
     <div class="flex flex-col md:flex-row gap-x-4 gap-y-2">
       <DepartmentsPickerListbox

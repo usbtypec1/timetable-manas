@@ -1,14 +1,6 @@
 <template>
-  <div
-    v-if="status === 'pending'"
-    class="flex h-screen justify-center items-center"
-  >
-    <ProgressSpinner/>
-  </div>
-
-  <template
-    v-if="!isCoursePickerShown"
-  >
+  <div>
+    <p v-if="status === 'error'">Произошла ошибка</p>
     <template v-if="width <= 920 && !forceDesktopView">
       <DailyTimetable
         v-if="status === 'success'"
@@ -29,10 +21,8 @@
     <FloatingCornerButton
       severity="primary"
       page-name="index"
-      @click="isCoursePickerShown = true"
     />
-  </template>
-
+  </div>
 </template>
 
 <script setup lang="ts">

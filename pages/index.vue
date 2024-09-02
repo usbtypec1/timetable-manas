@@ -1,5 +1,7 @@
 <template>
   <div>
+    <Title>Манас | Расписание</Title>
+
     <NuxtLink :to="{ name: 'multiple' }">
       <Button class="mb-2" label="Сравнить расписания" outlined/>
     </NuxtLink>
@@ -85,11 +87,12 @@
               />
               <Button
                 label="Дальше"
-                class="w-full"
+                class="grow"
                 icon="pi pi-arrow-right"
                 icon-pos="right"
                 :severity="selectedCourseId ? 'primary' : 'secondary'"
                 :disabled="!selectedCourseId"
+                :loading="isLoading"
                 @click="onSubmit"
               />
             </div>
@@ -109,6 +112,8 @@ const selectedFacultyId = ref<string>()
 const selectedDepartmentId = ref<string>()
 const selectedCourseId = ref<number>()
 
+const isLoading = ref<boolean>(false)
+
 watch(selectedFacultyId, () => {
   selectedDepartmentId.value = undefined
   selectedCourseId.value = undefined
@@ -119,6 +124,7 @@ watch(selectedDepartmentId, () => {
 })
 
 const onSubmit = async () => {
+  isLoading.value = true
   await navigateTo({ name: 'courses-id', params: { id: selectedCourseId.value } })
 }
 
