@@ -1,5 +1,5 @@
 <template>
-  <h5 class="font-semibold text-lg">Обобзначения кодов здраний</h5>
+  <h5 class="font-semibold text-lg">Обозначения кодов здраний</h5>
   <p
     v-for="{ code, name } in buildings"
     :key="code"
