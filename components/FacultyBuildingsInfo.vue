@@ -12,7 +12,7 @@
 const buildings: { code: string, name: string }[] = [
   { code: 'İİBF', name: 'здание факультета экономики' },
   { code: 'MFFB', name: 'здание инженерного факультета' },
-  { code: 'KSSB', name: 'здание физкультуры' },
+  { code: 'KSSB', name: 'здание физкультуры, колледжа, рядом с sağlık merkezi' },
   { code: 'MYOB', name: 'здание колледжа' },
   { code: 'ZİRF', name: 'здание факультета агрономии' },
   { code: 'İLEF', name: 'здание факультета коммуникации' },
