@@ -24,6 +24,15 @@
     </template>
   </Inplace>
 
+  <Inplace class="my-3">
+    <template #display>
+      <Button text icon="pi pi-info-circle" label="Обозначения зданий"/>
+    </template>
+    <template #content>
+      <FacultyBuildingsInfo/>
+    </template>
+  </Inplace>
+
   <div class="my-4">
     <p class="text-sm mb-1 font-semibold">Размер таблицы</p>
     <SelectButton
@@ -94,6 +103,7 @@
 <script setup lang="ts">
 import type { PeriodTimetable } from '~/types/timetable'
 import { getWeekdayNumber } from '~/services/time'
+import FacultyBuildingsInfo from '~/components/FacultyBuildingsInfo.vue'
 
 defineProps<{
   periodTimetables: PeriodTimetable[],

@@ -39,6 +39,7 @@
               :options="departments"
               option-label="name"
               option-value="id"
+              empty-message="Не выбран факультет"
             />
             <div class="w-full flex justify-between gap-x-3">
               <Button
@@ -100,11 +101,24 @@
         </StepPanel>
       </StepItem>
     </Stepper>
+
+    <NuxtLink
+      v-if="lastViewedCourse.courseId !== undefined && !isLoading"
+      :to="{ name: 'courses-id', params: { id: lastViewedCourse.courseId } }"
+    >
+      <Button
+        class="my-4 w-full"
+        severity="help"
+        outlined
+        :label="`Быстрый просмотр: ${lastViewedCourse.departmentName} - ${lastViewedCourse.courseNumber} курс`"
+      />
+    </NuxtLink>
   </div>
 </template>
 
 <script setup lang="ts">
 import { getFaculties } from '~/services/faculties'
+import { useStorage } from '@vueuse/core'
 import type { Department } from '~/types/departments'
 import type { Course } from '~/types/courses'
 
@@ -113,6 +127,8 @@ const selectedDepartmentId = ref<string>()
 const selectedCourseId = ref<number>()
 
 const isLoading = ref<boolean>(false)
+
+const lastViewedCourse = useStorage('lastCourse', {})
 
 watch(selectedFacultyId, () => {
   selectedDepartmentId.value = undefined
@@ -125,6 +141,11 @@ watch(selectedDepartmentId, () => {
 
 const onSubmit = async () => {
   isLoading.value = true
+  lastViewedCourse.value = {
+    departmentName: departments.value.find(department => department.id === selectedDepartmentId.value)?.name,
+    courseNumber: courses.value.find(course => course.id === selectedCourseId.value)?.number,
+    courseId: selectedCourseId.value,
+  }
   await navigateTo({ name: 'courses-id', params: { id: selectedCourseId.value } })
 }
 
