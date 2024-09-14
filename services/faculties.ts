@@ -14,3 +14,23 @@ export const getDepartmentNameByCourseId = (courseId: number): string | undefine
     }
   }
 }
+
+export const getDepartmentNameAndCourseNumberByCourseId = (courseId: number): {
+  departmentName: string,
+  courseNumber: number,
+  courseId: number
+} | undefined => {
+  for (const { departments } of getFaculties()) {
+    for (const department of departments) {
+      for (const course of department.courses) {
+        if (course.id === courseId) {
+          return {
+            departmentName: department.name,
+            courseNumber: course.number,
+            courseId: course.id
+          }
+        }
+      }
+    }
+  }
+}

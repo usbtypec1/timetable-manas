@@ -64,9 +64,10 @@
         <div class="px-4 py-3 flex flex-col gap-y-4">
           <p class="text-lg font-semibold">Выберите курс</p>
           <Listbox
-            v-model="selectedCourse"
+            v-model="selectedCourseId"
             :options="courses"
             :option-label="formatCourseLabel"
+            option-value="id"
             empty-message="Не выбрано направление"
           />
           <div class="w-full flex justify-between gap-x-3">
@@ -84,10 +85,10 @@
               class="grow"
               icon="pi pi-arrow-right"
               icon-pos="right"
-              :severity="selectedCourse ? 'primary' : 'secondary'"
-              :disabled="selectedCourse === undefined"
+              :severity="selectedCourseId ? 'primary' : 'secondary'"
+              :disabled="selectedCourseId === undefined"
               :loading="isLoading"
-              @click="emit('submit', selectedCourse, departmentName)"
+              @click="emit('submit', selectedCourseId)"
             />
           </div>
         </div>
@@ -102,7 +103,7 @@ import type { Course } from '~/types/courses'
 import type { Department } from '~/types/departments'
 import type { Faculty } from '~/types/faculties'
 
-const selectedCourse = ref<Course>()
+const selectedCourseId = ref<number>()
 const selectedDepartmentId = ref<string>()
 const selectedFacultyId = ref<string>()
 
@@ -112,16 +113,16 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  submit: [course: Course, departmentName: string],
+  submit: [courseId: number],
 }>()
 
 watch(selectedFacultyId, (): void => {
   selectedDepartmentId.value = undefined
-  selectedCourse.value = undefined
+  selectedCourseId.value = undefined
 })
 
 watch(selectedDepartmentId, (): void => {
-  selectedCourse.value = undefined
+  selectedCourseId.value = undefined
 })
 
 const departments = computed((): Department[] => {
@@ -130,10 +131,6 @@ const departments = computed((): Department[] => {
 
 const courses = computed((): Course[] => {
   return departments.value.find(department => department.id === selectedDepartmentId.value)?.courses || []
-})
-
-const departmentName = computed((): string | undefined => {
-  return departments.value.find(department => department.id === selectedDepartmentId.value)?.name
 })
 
 const formatCourseLabel = (course: Course): string => `Курс ${course.number}`

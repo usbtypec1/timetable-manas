@@ -12,38 +12,48 @@
       @submit="onSubmit"
     />
 
-    <NuxtLink
-      v-if="lastViewedCourse.courseId !== undefined && !isLoading"
-      :to="{ name: 'courses-id', params: { id: lastViewedCourse.courseId } }"
-    >
-      <Button
-        class="my-4 w-full"
-        severity="help"
-        outlined
-        :label="`Быстрый просмотр: ${lastViewedCourse.departmentName} - ${lastViewedCourse.courseNumber} курс`"
-      />
-    </NuxtLink>
+    <section class="flex flex-col gap-y-3 my-3">
+      <h3 class="font-semibold text-xl text-center">Быстрый просмотр</h3>
+      <NuxtLink
+        v-for="{ departmentName, courseNumber, courseId } in lastViewedCourses.toReversed()"
+        :key="courseNumber"
+        :to="{ name: 'courses-id', params: { id: courseId } }"
+      >
+        <Button
+          class=" w-full"
+          severity="help"
+          outlined
+          :label="`${departmentName} - ${courseNumber} курс`"
+        />
+      </NuxtLink>
+    </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { getFaculties } from '~/services/faculties'
+import { getDepartmentNameAndCourseNumberByCourseId, getFaculties } from '~/services/faculties'
 import { useStorage } from '@vueuse/core'
-import type { Course } from '~/types/courses'
 
 const isLoading = ref<boolean>(false)
 
-const lastViewedCourse = useStorage('lastCourse', {})
+const lastViewedCourseIds = useStorage('lastCourseIds', [])
 
-const onSubmit = async (course: Course, departmentName: string): void => {
+const onSubmit = async (courseId: number): void => {
   isLoading.value = true
-  lastViewedCourse.value = {
-    departmentName,
-    courseId: course.id,
-    courseNumber: course.number,
+  if (lastViewedCourseIds.value.includes(courseId)) {
+    lastViewedCourseIds.value = lastViewedCourseIds.value.filter((id) => id !== courseId)
   }
-  await navigateTo({ name: 'courses-id', params: { id: course.id } })
+  lastViewedCourseIds.value.push(courseId)
+  if (lastViewedCourseIds.value.length > 3) {
+    lastViewedCourseIds.value.shift()
+  }
+  await navigateTo({ name: 'courses-id', params: { id: courseId } })
 }
+
+const lastViewedCourses = computed((): {
+  departmentName: string,
+  courseNumber: number
+}[] => lastViewedCourseIds.value.map((courseId) => getDepartmentNameAndCourseNumberByCourseId(courseId)))
 
 const faculties = getFaculties()
 </script>
