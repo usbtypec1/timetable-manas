@@ -12,7 +12,10 @@
       @submit="onSubmit"
     />
 
-    <section class="flex flex-col gap-y-3 my-3">
+    <section
+      v-if="!isLoading"
+      class="flex flex-col gap-y-3 my-3"
+    >
       <h3 class="font-semibold text-xl text-center">Быстрый просмотр</h3>
       <NuxtLink
         v-for="{ departmentName, courseNumber, courseId } in lastViewedCourses.toReversed()"
