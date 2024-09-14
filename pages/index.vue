@@ -13,7 +13,7 @@
     />
 
     <section
-      v-if="!isLoading"
+      v-if="!isLoading && lastViewedCourses.length"
       class="flex flex-col gap-y-3 my-3"
     >
       <h3 class="font-semibold text-xl text-center">Быстрый просмотр</h3>
