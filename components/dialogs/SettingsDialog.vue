@@ -1,18 +1,9 @@
 <template>
   <Dialog v-model:visible="isVisible" modal header="Настройки" :style="{ width: '25rem' }">
-    <div class="flex items-center gap-x-2 mb-4">
-      <ToggleSwitch
-        v-model="isLastViewedCoursesVisible"
-        :input-id="isLastViewedCoursesVisibleInputId"
-      />
-      <label
-        class="font-semibold"
-        :for="isLastViewedCoursesVisibleInputId"
-      >
-        Быстрый просмотр
-      </label>
-    </div>
-
+    <ToggleSwitchWithLabel
+      v-model="isLastViewedCoursesVisible"
+      label="Быстрый просмотр"
+    />
     <div class="flex justify-end gap-3">
       <Button type="button" label="Отменить" severity="secondary" @click="isVisible = false"></Button>
       <Button type="button" label="Сохранить" @click="onSaveSettings"/>
@@ -21,9 +12,9 @@
 </template>
 
 <script setup lang="ts">
-const isVisible = defineModel<boolean>('isVisible')
+import ToggleSwitchWithLabel from '~/components/ToggleSwitchWithLabel.vue'
 
-const isLastViewedCoursesVisibleInputId = useId()
+const isVisible = defineModel<boolean>('isVisible')
 
 const isLastViewedCoursesVisible = useState('isLastViewedCoursesVisible', () => false)
 
