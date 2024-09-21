@@ -2,9 +2,17 @@
   <div>
     <Title>Манас | Расписание</Title>
 
-    <NuxtLink :to="{ name: 'multiple' }">
-      <Button class="mb-2" label="Сравнить расписания" outlined/>
-    </NuxtLink>
+    <div class="flex justify-between mb-2">
+      <NuxtLink :to="{ name: 'multiple' }">
+        <Button text label="Сравнить расписания" outlined/>
+      </NuxtLink>
+      <Button
+        icon="pi pi-cog"
+        @click="isSettingsDialogVisible = true"
+        text
+        label="Настройки"
+      />
+    </div>
 
     <CourseChooseStepper
       :faculties="faculties"
@@ -13,7 +21,7 @@
     />
 
     <section
-      v-if="!isLoading && lastViewedCourses.length"
+      v-if="!isLoading && lastViewedCourses.length && settings.isLastViewedCoursesVisible"
       class="flex flex-col gap-y-3 my-3"
     >
       <h3 class="font-semibold text-xl text-center">Быстрый просмотр</h3>
@@ -30,14 +38,20 @@
         />
       </NuxtLink>
     </section>
+
+    <SettingsDialog v-model:is-visible="isSettingsDialogVisible"/>
   </div>
 </template>
 
 <script setup lang="ts">
 import { getDepartmentNameAndCourseNumberByCourseId, getFaculties } from '~/services/faculties'
 import { useStorage } from '@vueuse/core'
+import SettingsDialog from '~/components/dialogs/SettingsDialog.vue'
+
+const { settings } = useSettings()
 
 const isLoading = ref<boolean>(false)
+const isSettingsDialogVisible = ref<boolean>(false)
 
 const lastViewedCourseIds = useStorage('lastCourseIds', [])
 
