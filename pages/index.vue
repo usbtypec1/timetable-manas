@@ -21,7 +21,7 @@
     />
 
     <section
-      v-if="!isLoading && lastViewedCourses.length && settings.isLastViewedCoursesVisible"
+      v-if="!isLoading && lastViewedCourses.length && settings.isLastViewedCoursesVisible "
       class="flex flex-col gap-y-3 my-3"
     >
       <h3 class="font-semibold text-xl text-center">Быстрый просмотр</h3>
@@ -45,32 +45,29 @@
 
 <script setup lang="ts">
 import { getDepartmentNameAndCourseNumberByCourseId, getFaculties } from '~/services/faculties'
-import { useStorage } from '@vueuse/core'
 import SettingsDialog from '~/components/dialogs/SettingsDialog.vue'
+import { useCoursesHistory } from '~/composables/courses-history'
 
 const { settings } = useSettings()
 
 const isLoading = ref<boolean>(false)
 const isSettingsDialogVisible = ref<boolean>(false)
 
-const lastViewedCourseIds = useStorage('lastCourseIds', [])
+const {
+  history: coursesHistory,
+  push: pushToCoursesHistory,
+} = useCoursesHistory({ maxSize: 3 })
 
 const onSubmit = async (courseId: number): void => {
   isLoading.value = true
-  if (lastViewedCourseIds.value.includes(courseId)) {
-    lastViewedCourseIds.value = lastViewedCourseIds.value.filter((id) => id !== courseId)
-  }
-  lastViewedCourseIds.value.push(courseId)
-  if (lastViewedCourseIds.value.length > 3) {
-    lastViewedCourseIds.value.shift()
-  }
+  pushToCoursesHistory(courseId)
   await navigateTo({ name: 'courses-id', params: { id: courseId } })
 }
 
 const lastViewedCourses = computed((): {
   departmentName: string,
   courseNumber: number
-}[] => lastViewedCourseIds.value.map((courseId) => getDepartmentNameAndCourseNumberByCourseId(courseId)))
+}[] => coursesHistory.value.map((courseId) => getDepartmentNameAndCourseNumberByCourseId(courseId)))
 
 const faculties = getFaculties()
 </script>
