@@ -66,8 +66,8 @@
                 {{ courseIdToDepartmentName[lesson.courseId] }}
               </p>
               <p>{{ lesson.name }}</p>
-              <p>{{ lesson.teacherName }}</p>
-              <p>{{ lesson.location }}</p>
+              <p v-if="settings.isTeacherNamesVisible">{{ lesson.teacherName }}</p>
+              <p v-if="settings.isLocationsVisible">{{ lesson.location }}</p>
             </div>
           </div>
           <div v-else>
@@ -92,6 +92,8 @@ defineProps<{
   courseNumber?: number,
   showDepartmentNames: boolean,
 }>()
+
+const { settings } = useSettings()
 
 const forceDesktopView = defineModel<boolean>('forceDesktopView')
 

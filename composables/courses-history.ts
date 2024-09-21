@@ -5,7 +5,7 @@ export const useCoursesHistory = ({ maxSize = 3 }: { maxSize: number }) => {
 
   const push = (courseId: number) => {
     if (history.value.includes(courseId)) {
-      history.value.filter((v) => v !== courseId)
+      history.value = history.value.filter((v) => v !== courseId)
     }
     history.value.push(courseId)
     if (history.value.length > maxSize) {

@@ -1,11 +1,15 @@
 import { useStorage } from '@vueuse/core'
 
 interface Settings {
-  isLastViewedCoursesVisible: boolean
+  isCoursesHistoryVisible: boolean
+  isTeacherNamesVisible: boolean
+  isLocationsVisible: boolean
 }
 
 const defaultSettings: Settings = {
-  isLastViewedCoursesVisible: true,
+  isCoursesHistoryVisible: true,
+  isTeacherNamesVisible: true,
+  isLocationsVisible: true,
 }
 
 export const useSettings = () => {
