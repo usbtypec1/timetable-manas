@@ -2,18 +2,6 @@
   <div>
     <Title>Манас | Расписание</Title>
 
-    <div class="flex justify-between mb-2">
-      <NuxtLink :to="{ name: 'multiple' }">
-        <Button text label="Сравнить расписания" outlined/>
-      </NuxtLink>
-      <Button
-        icon="pi pi-cog"
-        @click="isSettingsDialogVisible = true"
-        text
-        label="Настройки"
-      />
-    </div>
-
     <CourseChooseStepper
       :faculties="faculties"
       :is-loading="isLoading"
@@ -38,20 +26,16 @@
         />
       </NuxtLink>
     </section>
-
-    <SettingsDialog v-model:is-visible="isSettingsDialogVisible"/>
   </div>
 </template>
 
 <script setup lang="ts">
 import { getDepartmentNameAndCourseNumberByCourseId, getFaculties } from '~/services/faculties'
-import SettingsDialog from '~/components/dialogs/SettingsDialog.vue'
 import { useCoursesHistory } from '~/composables/courses-history'
 
 const { settings } = useSettings()
 
 const isLoading = ref<boolean>(false)
-const isSettingsDialogVisible = ref<boolean>(false)
 
 const {
   history: coursesHistory,

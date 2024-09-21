@@ -25,7 +25,7 @@ const isVisible = defineModel<boolean>('isVisible')
 
 const isLastViewedCoursesVisibleInputId = useId()
 
-const isLastViewedCoursesVisible = ref<boolean>(true)
+const isLastViewedCoursesVisible = useState('isLastViewedCoursesVisible', () => false)
 
 const { update } = useSettings()
 
