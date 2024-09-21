@@ -15,11 +15,9 @@ const defaultSettings: Settings = {
 export const useSettings = () => {
   const settings = useStorage('settings', defaultSettings)
 
-  const reset = () => settings.value = { ...defaultSettings }
-
   const update = (newSettings: Partial<Settings>) => {
     settings.value = { ...settings.value, ...newSettings }
   }
 
-  return { settings, reset, update }
+  return { settings, update }
 }

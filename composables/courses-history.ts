@@ -13,8 +13,11 @@ export const useCoursesHistory = ({ maxSize = 3 }: { maxSize: number }) => {
     }
   }
 
+  const clear = () => history.value = []
+
   return {
     history,
     push,
+    clear,
   }
 }
