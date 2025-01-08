@@ -10,31 +10,9 @@
 
 <script setup lang="ts">
 import type { Weekday } from "~/types/weekdays";
+import { weekdayOptions } from "~/utils/weekdays";
 
 const weekdays = defineModel<Weekday[]>({ required: true });
-
-const weekdayOptions: Weekday[] = [
-  {
-    value: "monday",
-    label: "Понедельник",
-  },
-  {
-    value: "tuesday",
-    label: "Вторник",
-  },
-  {
-    value: "wednesday",
-    label: "Среда",
-  },
-  {
-    value: "thursday",
-    label: "Четверг",
-  },
-  {
-    value: "friday",
-    label: "Пятница",
-  },
-];
 
 const selectedWeekdayValues = ref<string[]>([
   weekdayOptions[getWeekdayNumber()].value,

@@ -55,6 +55,8 @@ import BuildingCodeInplace from "~/components/inplaces/BuildingCodeInplace.vue";
 import TextSizeSelect from "~/components/TextSizeSelect.vue";
 import type { Weekday } from "~/types/weekdays";
 import WeekdaysSelect from "./WeekdaysSelect.vue";
+import { getBackgroundColorByLessonType } from "~/utils/lesson-card";
+import { getWeekdayNumber } from "~/utils/time";
 
 defineProps<{
   periodTimetables: PeriodTimetable[];
@@ -68,5 +70,5 @@ const { settings } = useSettings();
 
 const forceDesktopView = defineModel<boolean>("forceDesktopView");
 
-const weekdays = ref<Weekday[]>([]);
+const weekdays = ref<Weekday[]>([weekdayOptions[getWeekdayNumber()]]);
 </script>
