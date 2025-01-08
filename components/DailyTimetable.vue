@@ -12,30 +12,10 @@
   <BuildingCodeInplace/>
   <CardColorInplace/>
 
-  <div class="my-4">
-    <p class="text-sm mb-1 font-semibold">Размер таблицы</p>
-    <SelectButton
-      v-model="textSize"
-      :options="textSizeOptions"
-      option-label="label"
-      option-value="value"
-    />
-  </div>
-
-  <div class="my-4">
-    <p class="text-sm mb-1 font-semibold">День недели</p>
-    <MultiSelect
-      v-model="weekday"
-      :options="weekdays"
-      option-label="label"
-      fluid
-      placeholder="Выберите день недели"
-      :max-selected-labels="weekdays.length"
-    />
-  </div>
+  <TextSizeSelect class="my-4"/>
 
   <div
-    v-for="day in weekday"
+    v-for="day in weekdays"
     :key="day.value"
   >
     <h3 class="text-xl my-4 font-semibold">{{ day.label }}</h3>
@@ -43,7 +23,7 @@
       :value="periodTimetables"
       show-gridlines
       class="mb-8"
-      :class="textSize"
+      :class="settings.textSize"
     >
       <Column field="period" header="Время" class="w-1/12"/>
       <Column
@@ -57,7 +37,7 @@
             <div
               v-for="lesson in data[day.value]"
               class="shadow-md my-2 rounded px-3 py-2"
-              :class="[getBackgroundColorByLessonType(lesson.type), textSize]"
+              :class="[getBackgroundColorByLessonType(lesson.type), settings.textSize]"
             >
               <p
                 v-if="showDepartmentNames"
@@ -84,6 +64,7 @@ import type { PeriodTimetable } from '~/types/timetable'
 import { getWeekdayNumber } from '~/services/time'
 import CardColorInplace from '~/components/inplaces/CardColorInplace.vue'
 import BuildingCodeInplace from '~/components/inplaces/BuildingCodeInplace.vue'
+import TextSizeSelect from '~/components/TextSizeSelect.vue'
 
 defineProps<{
   periodTimetables: PeriodTimetable[],
@@ -125,29 +106,12 @@ const weekdays: Weekday[] = [
   },
 ]
 
-const weekday = ref<Weekday>([weekdays[getWeekdayNumber()]])
+const weekday = ref<Weekday>(weekdays[getWeekdayNumber()])
 
 interface TextSize {
   label: string
   value: string
 }
-
-const textSizeOptions: TextSize[] = [
-  {
-    label: 'Маленький',
-    value: 'text-xs',
-  },
-  {
-    label: 'Средний',
-    value: 'text-sm',
-  },
-  {
-    label: 'Большой',
-    value: 'text-lg',
-  },
-]
-
-const textSize = ref<TextSize>(textSizeOptions[1].value)
 
 
 const typeToBackground = {

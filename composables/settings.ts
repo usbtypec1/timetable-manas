@@ -4,12 +4,14 @@ interface Settings {
   isCoursesHistoryVisible: boolean
   isTeacherNamesVisible: boolean
   isLocationsVisible: boolean
+  textSize: string
 }
 
 const defaultSettings: Settings = {
   isCoursesHistoryVisible: true,
   isTeacherNamesVisible: true,
   isLocationsVisible: true,
+  textSize: 'text-sm',
 }
 
 export const useSettings = () => {
