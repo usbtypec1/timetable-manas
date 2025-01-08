@@ -45,7 +45,7 @@
             <div
               v-for="lesson in data[day.value]"
               class="shadow-md my-2 rounded px-3 py-2"
-              :class="[getBackgroundColorByLessonType(lesson.type), settings.textSize]"
+              :class="[getBackgroundColorByLessonType(lesson.type)]"
             >
               <p
                 v-if="showDepartmentNames"
@@ -116,21 +116,4 @@ const weekdayOptions: Weekday[] = [
 ]
 
 const selectedWeekdayValues = ref<string[]>([weekdayOptions[getWeekdayNumber()].value])
-
-interface TextSize {
-  label: string
-  value: string
-}
-
-
-const typeToBackground = {
-  1: 'bg-amber-200 dark:bg-amber-500',
-  2: 'bg-emerald-200 dark:bg-emerald-500',
-  3: 'bg-blue-200 dark:bg-cyan-500',
-  4: 'bg-gray-200 dark:bg-gray-500',
-}
-
-const getBackgroundColorByLessonType = (type: number): string => {
-  return typeToBackground[type] || 'bg-gray-100 dark:bg-gray-500'
-}
 </script>

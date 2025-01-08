@@ -25,7 +25,7 @@
             v-for="lesson in data[field]"
             class="shadow-md my-2 rounded px-3 py-2"
             :class="[getBackgroundColorByLessonType(lesson.type)]"
-          >
+            >
             <p v-if="showDepartmentNames" class="font-semibold mb-1">
               {{ courseIdToDepartmentName[lesson.courseId] }}
             </p>
