@@ -14,8 +14,16 @@
 
   <TextSizeSelect class="my-4"/>
 
+  <MultiSelect 
+    v-model="selectedWeekdayValues"
+    :options="weekdayOptions"
+    option-label="label"
+    option-value="value"
+    fluid
+  />
+
   <div
-    v-for="day in weekdays"
+    v-for="day in weekdayOptions.filter(({ value }) => selectedWeekdayValues.includes(value))"
     :key="day.value"
   >
     <h3 class="text-xl my-4 font-semibold">{{ day.label }}</h3>
@@ -65,6 +73,7 @@ import { getWeekdayNumber } from '~/services/time'
 import CardColorInplace from '~/components/inplaces/CardColorInplace.vue'
 import BuildingCodeInplace from '~/components/inplaces/BuildingCodeInplace.vue'
 import TextSizeSelect from '~/components/TextSizeSelect.vue'
+import MultiSelect from 'primevue/multiselect'
 
 defineProps<{
   periodTimetables: PeriodTimetable[],
@@ -83,7 +92,7 @@ interface Weekday {
   value: string
 }
 
-const weekdays: Weekday[] = [
+const weekdayOptions: Weekday[] = [
   {
     value: 'monday',
     label: 'Понедельник',
@@ -106,7 +115,7 @@ const weekdays: Weekday[] = [
   },
 ]
 
-const weekday = ref<Weekday>(weekdays[getWeekdayNumber()])
+const selectedWeekdayValues = ref<string[]>([weekdayOptions[getWeekdayNumber()].value])
 
 interface TextSize {
   label: string
