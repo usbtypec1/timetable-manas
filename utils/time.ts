@@ -14,4 +14,4 @@ export const getWeekdayNumber = (): number => {
     return 0; // Saturday or Sunday
   }
   return day - 1; // Shift to make Monday = 0
-}
+};
