@@ -7,10 +7,10 @@ export default {
     "./plugins/**/*.{js,ts}",
     "./app.vue",
     "./error.vue",
+    "./utils/**/*.{js,ts}",
   ],
   theme: {
     extend: {},
   },
   plugins: [],
 }
-
