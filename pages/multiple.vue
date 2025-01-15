@@ -26,6 +26,7 @@
         :course-id-to-department-name="courseIdToDepartmentName"
         v-model:force-desktop-view="forceDesktopView"
         :show-department-names="true"
+        :colors-by-course="true"
       />
       <DailyTimetableSkeleton v-if="status === 'pending'"/>
     </template>
@@ -36,6 +37,7 @@
         :course-id-to-department-name="courseIdToDepartmentName"
         v-model:force-desktop-view="forceDesktopView"
         :show-department-names="true"
+        :colors-by-course="true"
       />
       <LessonsTimetableSkeleton v-if="status === 'pending'"/>
     </template>

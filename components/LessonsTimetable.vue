@@ -11,7 +11,11 @@
 
   <TextSizeSelect class="my-4" />
 
-  <DataTable :value="periodTimetables" show-gridlines :class="settings.textSize">
+  <DataTable
+    :value="periodTimetables"
+    show-gridlines
+    :class="settings.textSize"
+  >
     <Column field="period" header="Время" class="w-1/12" />
     <Column
       v-for="{ field, header } in columns"
@@ -22,10 +26,16 @@
       <template #body="{ data }">
         <div v-if="(data[field] ?? []).length >= 1">
           <div
-            v-for="lesson in data[field]"
+            v-for="(lesson, index) in data[field]"
             class="shadow-md my-2 rounded px-3 py-2"
-            :class="[getBackgroundColorByLessonType(lesson.type)]"
-            >
+            :class="[
+              colorsByCourse
+                ? comparatorBackgroundColors[
+                    index % comparatorBackgroundColors.length
+                  ]
+                : getBackgroundColorByLessonType(lesson.type),
+            ]"
+          >
             <p v-if="showDepartmentNames" class="font-semibold mb-1">
               {{ courseIdToDepartmentName[lesson.courseId] }}
             </p>
@@ -48,7 +58,10 @@ import { useWindowSize } from "@vueuse/core";
 import BuildingCodeInplace from "~/components/inplaces/BuildingCodeInplace.vue";
 import CardColorInplace from "~/components/inplaces/CardColorInplace.vue";
 import TextSizeSelect from "~/components/TextSizeSelect.vue";
-import { getBackgroundColorByLessonType } from "~/utils/lesson-card";
+import {
+  getBackgroundColorByLessonType,
+  comparatorBackgroundColors,
+} from "~/utils/lesson-card";
 
 defineProps<{
   periodTimetables: PeriodTimetable[];
@@ -56,6 +69,7 @@ defineProps<{
   departmentName?: string;
   courseNumber?: number;
   showDepartmentNames: boolean;
+  colorsByCourse: boolean;
 }>();
 
 const { settings } = useSettings();

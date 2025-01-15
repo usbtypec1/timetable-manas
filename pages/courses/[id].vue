@@ -9,6 +9,7 @@
         v-model:force-desktop-view="forceDesktopView"
         :department-name="departmentName"
         :show-department-names="false"
+        :colors-by-course="false"
       />
     </template>
     <template v-else>
@@ -19,6 +20,7 @@
         v-model:force-desktop-view="forceDesktopView"
         :department-name="departmentName"
         :show-department-names="false"
+        :colors-by-course="false"
       />
     </template>
 

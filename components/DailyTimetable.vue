@@ -3,17 +3,17 @@
   <h4 v-if="departmentName !== undefined" class="text-xl font-semibold mb-4">
     {{ departmentName }}
   </h4>
-  
+
   <DesktopViewToggleSwitch v-model="forceDesktopView" />
 
   <BuildingCodeInplace />
-  
+
   <CardColorInplace />
-  
+
   <TextSizeSelect class="my-4" />
-  
+
   <WeekdaysSelect v-model="weekdays" />
-  
+
   <div v-for="day in weekdays" :key="day.value">
     <h3 class="text-xl my-4 font-semibold">{{ day.label }}</h3>
     <DataTable
@@ -27,9 +27,15 @@
         <template #body="{ data }">
           <div v-if="(data[day.value] ?? []).length >= 1">
             <div
-              v-for="lesson in data[day.value]"
+              v-for="(lesson, index) in data[day.value]"
               class="shadow-md my-2 rounded px-3 py-2"
-              :class="[getBackgroundColorByLessonType(lesson.type)]"
+              :class="[
+                colorsByCourse
+                  ? comparatorBackgroundColors[
+                      index % comparatorBackgroundColors.length
+                    ]
+                  : getBackgroundColorByLessonType(lesson.type),
+              ]"
             >
               <p v-if="showDepartmentNames" class="font-semibold mb-1">
                 {{ courseIdToDepartmentName[lesson.courseId] }}
@@ -55,7 +61,10 @@ import BuildingCodeInplace from "~/components/inplaces/BuildingCodeInplace.vue";
 import TextSizeSelect from "~/components/TextSizeSelect.vue";
 import type { Weekday } from "~/types/weekdays";
 import WeekdaysSelect from "./WeekdaysSelect.vue";
-import { getBackgroundColorByLessonType } from "~/utils/lesson-card";
+import {
+  getBackgroundColorByLessonType,
+  comparatorBackgroundColors,
+} from "~/utils/lesson-card";
 import { getWeekdayNumber } from "~/utils/time";
 
 defineProps<{
@@ -64,6 +73,7 @@ defineProps<{
   departmentName?: string;
   courseNumber?: number;
   showDepartmentNames: boolean;
+  colorsByCourse: boolean;
 }>();
 
 const { settings } = useSettings();
