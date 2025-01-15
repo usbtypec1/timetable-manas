@@ -14,8 +14,13 @@
     </template>
 
     <div class="flex flex-col gap-y-2">
-      <div v-for="course in department.courses" class="flex gap-x-2 items-center">
-        <label :for="course.id">Курс: {{ course.number }}</label>
+      <div
+        v-for="course in department.courses"
+        class="flex gap-x-2 items-center"
+      >
+        <label class="w-14" :for="course.id"
+          >Курс: {{ course.number }}</label
+        >
         <Checkbox
           :input-id="String(course.id)"
           :value="course.id"
@@ -27,19 +32,23 @@
 </template>
 
 <script setup lang="ts">
-import type { Department } from '~/types/departments'
+import type { Department } from "~/types/departments";
 
 const props = defineProps<{
-  department: Department,
-}>()
+  department: Department;
+}>();
 
-const selectedCourseIds = defineModel<number[]>('selectedCourseIds')
-const selectedDepartments = defineModel<Department[]>('selectedDepartments')
+const selectedCourseIds = defineModel<number[]>("selectedCourseIds");
+const selectedDepartments = defineModel<Department[]>("selectedDepartments");
 
 const unselectDepartment = (departmentId: number): void => {
-  selectedCourseIds.value = selectedCourseIds.value.filter((courseId: number) => {
-    return !props.department.courses.some((course) => course.id === courseId)
-  })
-  selectedDepartments.value = selectedDepartments.value.filter((department: any) => department.id !== departmentId)
-}
+  selectedCourseIds.value = selectedCourseIds.value.filter(
+    (courseId: number) => {
+      return !props.department.courses.some((course) => course.id === courseId);
+    }
+  );
+  selectedDepartments.value = selectedDepartments.value.filter(
+    (department: any) => department.id !== departmentId
+  );
+};
 </script>

@@ -21,3 +21,7 @@ export const comparatorBackgroundColors: string[] = [
   "bg-indigo-100 dark:bg-indigo-900",
   "bg-white dark:bg-black",
 ];
+
+export const getRandomBackgroundColors = (): string[] => {
+  return comparatorBackgroundColors.toSorted(() => Math.random() - 0.5);
+};

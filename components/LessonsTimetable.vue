@@ -60,7 +60,7 @@ import CardColorInplace from "~/components/inplaces/CardColorInplace.vue";
 import TextSizeSelect from "~/components/TextSizeSelect.vue";
 import {
   getBackgroundColorByLessonType,
-  comparatorBackgroundColors,
+  getRandomBackgroundColors,
 } from "~/utils/lesson-card";
 
 defineProps<{
@@ -71,6 +71,8 @@ defineProps<{
   showDepartmentNames: boolean;
   colorsByCourse: boolean;
 }>();
+
+const comparatorBackgroundColors = getRandomBackgroundColors();
 
 const { settings } = useSettings();
 

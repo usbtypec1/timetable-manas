@@ -63,7 +63,7 @@ import type { Weekday } from "~/types/weekdays";
 import WeekdaysSelect from "./WeekdaysSelect.vue";
 import {
   getBackgroundColorByLessonType,
-  comparatorBackgroundColors,
+  getRandomBackgroundColors,
 } from "~/utils/lesson-card";
 import { getWeekdayNumber } from "~/utils/time";
 
@@ -75,6 +75,8 @@ defineProps<{
   showDepartmentNames: boolean;
   colorsByCourse: boolean;
 }>();
+
+const comparatorBackgroundColors = getRandomBackgroundColors();
 
 const { settings } = useSettings();
 
