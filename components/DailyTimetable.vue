@@ -31,9 +31,7 @@
               class="shadow-md my-2 rounded px-3 py-2"
               :class="[
                 colorsByCourse
-                  ? comparatorBackgroundColors[
-                      index % comparatorBackgroundColors.length
-                    ]
+                  ? getBackgroundColorByCourseId(lesson.courseId)
                   : getBackgroundColorByLessonType(lesson.type),
               ]"
             >
@@ -63,7 +61,7 @@ import type { Weekday } from "~/types/weekdays";
 import WeekdaysSelect from "./WeekdaysSelect.vue";
 import {
   getBackgroundColorByLessonType,
-  getRandomBackgroundColors,
+  createColorDispancer,
 } from "~/utils/lesson-card";
 import { getWeekdayNumber } from "~/utils/time";
 
@@ -76,7 +74,7 @@ defineProps<{
   colorsByCourse: boolean;
 }>();
 
-const comparatorBackgroundColors = getRandomBackgroundColors();
+const getBackgroundColorByCourseId = createColorDispancer()
 
 const { settings } = useSettings();
 

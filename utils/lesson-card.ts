@@ -25,3 +25,14 @@ export const comparatorBackgroundColors: string[] = [
 export const getRandomBackgroundColors = (): string[] => {
   return comparatorBackgroundColors.toSorted(() => Math.random() - 0.5);
 };
+
+export const createColorDispancer = () => {
+  const keyToColor: Record<string, string> = {}
+  const colors = getRandomBackgroundColors();
+  return (key: number | string) => {
+    if (!keyToColor[key]) {
+      keyToColor[key] = colors[Object.keys(keyToColor).length % colors.length];
+    }
+    return keyToColor[key];
+  }
+}
