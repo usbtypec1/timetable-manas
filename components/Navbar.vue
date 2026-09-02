@@ -20,6 +20,14 @@
             outlined
           />
         </NuxtLink>
+        <NuxtLink :to="{ name: 'search' }">
+          <Button
+            icon="pi pi-search"
+            text
+            label="Поиск"
+            outlined
+          />
+        </NuxtLink>
       </div>
     </template>
     <template #end>
