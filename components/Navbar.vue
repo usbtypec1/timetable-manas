@@ -1,6 +1,6 @@
 <template>
   <Toolbar
-    class="hidden md:flex"
+    class="!hidden md:!flex"
     style="border-radius: 0; padding: 0"
   >
     <template #start>

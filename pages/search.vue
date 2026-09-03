@@ -16,11 +16,13 @@
       class="w-full mb-4"
     />
 
-    <p v-if="isBuildingIndex">
-      Собираем базу предметов, подождите… загружено {{ loadedChunkCount }} из {{ totalChunkCount }}.
-      Прогресс сохраняется, можно спокойно перезагрузить или закрыть вкладку — при возврате сбор
-      продолжится с того же места.
-    </p>
+    <div v-if="isBuildingIndex" class="mb-4">
+      <p class="mb-2">
+        Собираем базу предметов, подождите… Прогресс сохраняется, можно спокойно перезагрузить
+        или закрыть вкладку — при возврате сбор продолжится с того же места.
+      </p>
+      <ProgressBar :value="indexingProgress"/>
+    </div>
     <p v-else-if="hasLoadError">
       Не удалось загрузить часть курсов, результаты поиска могут быть неполными
     </p>
@@ -201,6 +203,9 @@ const isBuildingIndex = ref<boolean>(true)
 const hasLoadError = ref<boolean>(false)
 const loadedChunkCount = ref<number>(0)
 const totalChunkCount = chunks.length
+
+const indexingProgress = computed((): number =>
+  totalChunkCount === 0 ? 100 : Math.round((loadedChunkCount.value / totalChunkCount) * 100))
 
 const cachedState = useStorage<CachedState | null>(STORAGE_KEY, null, undefined, {
   serializer: StorageSerializers.object,
