@@ -2,61 +2,90 @@
   <div>
     <Title>Манас | Поиск предметов</Title>
 
-    <h3 class="text-3xl font-semibold my-4">Поиск предметов</h3>
+    <h3 class="text-3xl font-semibold mt-4 mb-3">Поиск предметов</h3>
 
-    <p class="mb-4">
-      Поиск ищет сразу по всем факультетам и направлениям. При первом заходе на этом устройстве
-      сбор базы предметов может занять около минуты — дальше результат хранится в этом браузере
-      и открывается мгновенно.
-    </p>
+    <IconField class="w-full mb-2">
+      <InputIcon class="pi pi-search"/>
+      <InputText
+        v-model="query"
+        placeholder="Предмет, код или преподаватель"
+        class="w-full"
+      />
+    </IconField>
 
-    <InputText
-      v-model="query"
-      placeholder="Название, код или преподаватель"
-      class="w-full mb-4"
-    />
-
-    <div v-if="isBuildingIndex" class="mb-4">
-      <p class="mb-2">
-        Собираем базу предметов, подождите… Прогресс сохраняется, можно спокойно перезагрузить
-        или закрыть вкладку — при возврате сбор продолжится с того же места.
-      </p>
-      <ProgressBar :value="indexingProgress"/>
+    <div class="flex items-center justify-between gap-3 mb-4 min-h-[2rem]">
+      <p class="text-sm text-surface-500 dark:text-surface-400">{{ statusLabel }}</p>
+      <Button
+        icon="pi pi-refresh"
+        text
+        rounded
+        size="small"
+        severity="secondary"
+        :loading="isBuildingIndex"
+        :disabled="isBuildingIndex"
+        title="Обновить базу предметов"
+        @click="refreshIndex"
+      />
     </div>
-    <p v-else-if="hasLoadError">
-      Не удалось загрузить часть курсов, результаты поиска могут быть неполными
-    </p>
 
-    <p v-if="query.trim().length === 0">
-      Введите название предмета, код или фамилию преподавателя
-    </p>
-    <p v-else-if="groupedResults.length === 0">Ничего не найдено</p>
+    <ProgressBar
+      v-if="isBuildingIndex"
+      :value="indexingProgress"
+      class="mb-4"
+    />
+    <Message v-else-if="hasLoadError" severity="warn" :closable="false" class="mb-4">
+      Часть курсов не загрузилась, результаты могут быть неполными
+    </Message>
 
-    <div v-else class="flex flex-col gap-y-3">
+    <div
+      v-if="query.trim().length === 0"
+      class="flex flex-col items-center text-center text-surface-400 dark:text-surface-500 py-14 gap-2"
+    >
+      <i class="pi pi-search text-4xl"/>
+      <p>Начните вводить название предмета</p>
+    </div>
+    <div
+      v-else-if="groupedResults.length === 0"
+      class="flex flex-col items-center text-center text-surface-400 dark:text-surface-500 py-14 gap-2"
+    >
+      <i class="pi pi-inbox text-4xl"/>
+      <p>Ничего не найдено</p>
+    </div>
+
+    <div v-else class="flex flex-col gap-3">
       <div
         v-for="group in groupedResults"
         :key="group.key"
-        class="shadow-md rounded px-4 py-3"
+        class="rounded-xl border border-surface-200 dark:border-surface-700 px-4 py-3 transition-shadow hover:shadow-md"
       >
-        <p class="font-semibold">
-          <span v-if="group.code">{{ group.code }} — </span>{{ group.title }}
+        <div class="flex items-baseline gap-2 flex-wrap mb-1">
+          <Tag v-if="group.code" :value="group.code" severity="secondary"/>
+          <p class="font-semibold">{{ group.title }}</p>
+        </div>
+        <p v-if="group.teacherName" class="text-sm text-surface-500 dark:text-surface-400 mb-2">
+          {{ group.teacherName }}
         </p>
-        <p v-if="group.teacherName" class="mb-2">{{ group.teacherName }}</p>
 
-        <div class="flex flex-col gap-y-1">
+        <div class="flex flex-col gap-y-1.5">
           <div
             v-for="occurrence in group.occurrences"
             :key="occurrence.key"
-            class="text-sm flex flex-wrap gap-x-1"
+            class="text-sm flex flex-wrap items-center gap-x-3 gap-y-1 text-surface-600 dark:text-surface-300"
           >
-            <span>{{ occurrence.weekdayLabel }}, {{ occurrence.period }}</span>
-            <span v-if="occurrence.location">· {{ occurrence.location }}</span>
-            <span>·</span>
+            <span class="inline-flex items-center gap-1">
+              <i class="pi pi-calendar text-xs"/>
+              {{ occurrence.weekdayLabel }}, {{ occurrence.period }}
+            </span>
+            <span v-if="occurrence.location" class="inline-flex items-center gap-1">
+              <i class="pi pi-map-marker text-xs"/>
+              {{ occurrence.location }}
+            </span>
             <NuxtLink
               :to="{ name: 'courses-id', params: { id: occurrence.courseId } }"
-              class="underline"
+              class="ml-auto inline-flex items-center gap-1 text-primary hover:underline"
             >
-              {{ occurrence.facultyName }}, {{ occurrence.departmentName }}, {{ occurrence.courseNumber }} курс
+              {{ occurrence.departmentName }}, {{ occurrence.courseNumber }} курс
+              <i class="pi pi-arrow-up-right text-xs"/>
             </NuxtLink>
           </div>
         </div>
@@ -126,7 +155,7 @@ const WEEKDAY_KEYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'] as
 // Kept small on purpose: each chunk is fetched in a single serverless request,
 // and Vercel kills the function after 10s — a small chunk plus a per-course
 // timeout in fetchAndParseTimetable keeps every request safely under that.
-const CHUNK_SIZE = 6
+const CHUNK_SIZE = 4
 const CHUNK_CONCURRENCY = 4
 const CACHE_MAX_AGE_MS = 1000 * 60 * 60 * 12
 const CACHE_VERSION = 2
@@ -228,8 +257,8 @@ const flattenChunkLessons = (chunkLessons: (SearchableLesson[] | null)[]): Searc
   return chunkLessons.filter((chunk): chunk is SearchableLesson[] => chunk !== null).flat()
 }
 
-const buildIndex = async (): Promise<void> => {
-  const state = isReusableState(cachedState.value) ? cachedState.value : createEmptyState()
+const buildIndex = async (force = false): Promise<void> => {
+  const state = !force && isReusableState(cachedState.value) ? cachedState.value! : createEmptyState()
   cachedState.value = state
 
   lessons.value = flattenChunkLessons(state.chunkLessons)
@@ -267,8 +296,41 @@ const buildIndex = async (): Promise<void> => {
   isBuildingIndex.value = false
 }
 
+const refreshIndex = async (): Promise<void> => {
+  if (isBuildingIndex.value) {
+    return
+  }
+  await buildIndex(true)
+}
+
 onMounted(async () => {
   await buildIndex()
+})
+
+const formatRelativeTime = (timestamp: number): string => {
+  const rtf = new Intl.RelativeTimeFormat('ru', { numeric: 'auto' })
+  const diffMinutes = Math.round((Date.now() - timestamp) / 60000)
+
+  if (diffMinutes < 1) {
+    return 'только что'
+  }
+  if (diffMinutes < 60) {
+    return rtf.format(-diffMinutes, 'minute')
+  }
+  const diffHours = Math.round(diffMinutes / 60)
+  if (diffHours < 24) {
+    return rtf.format(-diffHours, 'hour')
+  }
+  const diffDays = Math.round(diffHours / 24)
+  return rtf.format(-diffDays, 'day')
+}
+
+const statusLabel = computed((): string => {
+  if (isBuildingIndex.value) {
+    return `Собираем базу: ${loadedChunkCount.value}/${totalChunkCount}`
+  }
+  const updatedAt = cachedState.value?.updatedAt
+  return updatedAt ? `Обновлено ${formatRelativeTime(updatedAt)}` : ''
 })
 
 const normalize = (value: string): string => (value ?? '').toLocaleLowerCase('tr')
