@@ -1,12 +1,19 @@
 <template>
   <div>
-    <p v-if="status === 'error'">Произошла ошибка</p>
-    <template v-if="width <= 920 && !forceDesktopView">
+    <Message
+      v-if="status === 'error'"
+      severity="error"
+      :closable="false"
+      class="mb-4"
+    >
+      Произошла ошибка
+    </Message>
+    <template v-if="isMobileLayout">
       <DailyTimetable
         v-if="status === 'success'"
-        :period-timetables="data"
-        :course-id-to-department-name="courseIdToDepartmentName(faculties)"
         v-model:force-desktop-view="forceDesktopView"
+        :period-timetables="data ?? []"
+        :course-id-to-department-name="courseIdToDepartmentName(faculties)"
         :department-name="departmentName"
         :show-department-names="false"
         :colors-by-course="false"
@@ -15,9 +22,9 @@
     <template v-else>
       <LessonsTimetable
         v-if="status === 'success'"
-        :period-timetables="data"
-        :course-id-to-department-name="courseIdToDepartmentName(faculties)"
         v-model:force-desktop-view="forceDesktopView"
+        :period-timetables="data ?? []"
+        :course-id-to-department-name="courseIdToDepartmentName(faculties)"
         :department-name="departmentName"
         :show-department-names="false"
         :colors-by-course="false"
@@ -32,12 +39,8 @@
 </template>
 
 <script setup lang="ts">
-import { courseIdToDepartmentName } from '~/services/departments'
-import { useWindowSize } from '@vueuse/core'
 import type { PeriodTimetable } from '~/types/timetable'
-import { getDepartmentNameByCourseId, getFaculties } from '~/services/faculties'
-
-const { width } = useWindowSize()
+import { courseIdToDepartmentName } from '~/utils/departments'
 
 const { params } = useRoute()
 
@@ -45,11 +48,18 @@ const courseId = Number(params.id)
 
 const departmentName = getDepartmentNameByCourseId(courseId)
 
-const forceDesktopView = ref<boolean>(false)
+const { forceDesktopView, isMobileLayout } = useTimetableLayout()
 
 const faculties = getFaculties()
 
 const { data, status } = await useFetch<PeriodTimetable[]>('/api/timetable', {
   query: { courseId },
+})
+
+useSeoMeta({
+  title: departmentName ? `Манас | Расписание — ${departmentName}` : 'Манас | Расписание',
+  description: departmentName
+    ? `Расписание занятий по направлению «${departmentName}» университета Манас.`
+    : 'Расписание занятий университета Манас.',
 })
 </script>

@@ -1,7 +1,5 @@
 <template>
   <div>
-    <Title>Манас | Расписание</Title>
-
     <NuxtLink :to="{ name: 'choose-course' }">
       <Button
         class="w-full mb-4"
@@ -15,7 +13,9 @@
       v-if="favoriteLessons.length > 0"
       class="flex flex-col gap-y-3 mb-6"
     >
-      <h3 class="font-semibold text-xl">Избранные уроки</h3>
+      <h3 class="font-semibold text-xl">
+        Избранные уроки
+      </h3>
       <div
         v-for="entry in favoriteLessons"
         :key="entry.key"
@@ -25,12 +25,21 @@
           :to="{ name: 'courses-id', params: { id: entry.courseId } }"
           class="min-w-0 grow"
         >
-          <p class="font-semibold">{{ entry.lesson.name }}</p>
-          <p v-if="courseLabel(entry.courseId)" class="text-sm text-gray-500">
+          <p class="font-semibold">
+            {{ entry.lesson.name }}
+          </p>
+          <p
+            v-if="courseLabel(entry.courseId)"
+            class="text-sm text-gray-500"
+          >
             {{ courseLabel(entry.courseId) }}
           </p>
-          <p class="text-sm text-gray-500">{{ entry.lesson.teacherName }}</p>
-          <p class="text-sm text-gray-500">{{ entry.lesson.location }}</p>
+          <p class="text-sm text-gray-500">
+            {{ entry.lesson.teacherName }}
+          </p>
+          <p class="text-sm text-gray-500">
+            {{ entry.lesson.location }}
+          </p>
         </NuxtLink>
         <Button
           icon="pi pi-heart-fill"
@@ -47,7 +56,9 @@
       v-if="lastViewedCourses.length && settings.isCoursesHistoryVisible"
       class="flex flex-col gap-y-3 my-3"
     >
-      <h3 class="font-semibold text-xl text-center">Быстрый просмотр</h3>
+      <h3 class="font-semibold text-xl text-center">
+        Быстрый просмотр
+      </h3>
       <NuxtLink
         v-for="{ departmentName, courseNumber, courseId } in lastViewedCourses.toReversed()"
         :key="courseNumber"
@@ -65,10 +76,6 @@
 </template>
 
 <script setup lang="ts">
-import { getDepartmentNameAndCourseNumberByCourseId } from '~/services/faculties'
-import { useCoursesHistory } from '~/composables/courses-history'
-import { useFavoriteLessons } from '~/composables/saved-lessons'
-
 const { settings } = useSettings()
 
 const { history: coursesHistory } = useCoursesHistory({ maxSize: 3 })
@@ -76,12 +83,20 @@ const { history: coursesHistory } = useCoursesHistory({ maxSize: 3 })
 const { items: favoriteLessons, toggle: toggleFavorite } = useFavoriteLessons()
 
 const lastViewedCourses = computed((): {
-  departmentName: string,
+  departmentName: string
   courseNumber: number
-}[] => coursesHistory.value.map((courseId) => getDepartmentNameAndCourseNumberByCourseId(courseId)))
+  courseId: number
+}[] => coursesHistory.value
+  .map(courseId => getDepartmentNameAndCourseNumberByCourseId(courseId))
+  .filter(course => course !== undefined))
 
 const courseLabel = (courseId: number): string | undefined => {
   const info = getDepartmentNameAndCourseNumberByCourseId(courseId)
   return info ? `${info.departmentName} - ${info.courseNumber} курс` : undefined
 }
+
+useSeoMeta({
+  title: 'Манас | Расписание',
+  description: 'Улучшенное расписание университета Манас: избранные уроки и быстрый доступ к недавним курсам.',
+})
 </script>

@@ -4,10 +4,10 @@
       v-model="selectedDepartments"
       :options="faculties"
       multiple
-      optionLabel="name"
+      option-label="name"
       class="w-full md:w-96"
-      optionGroupLabel="name"
-      optionGroupChildren="departments"
+      option-group-label="name"
+      option-group-children="departments"
       filter
       checkmark
       filter-placeholder="Поиск по направлению"
@@ -32,5 +32,5 @@ defineProps<{ faculties: Faculty[] }>()
 
 const emit = defineEmits(['clear'])
 
-const selectedDepartments = defineModel<Department[]>('selectedDepartments')
+const selectedDepartments = defineModel<Department[]>('selectedDepartments', { default: () => [] })
 </script>

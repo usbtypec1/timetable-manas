@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 defineProps<{
-  severity: string,
-  pageName: string,
+  severity: string
+  pageName: string
 }>()
 </script>

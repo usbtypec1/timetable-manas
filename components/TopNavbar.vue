@@ -34,13 +34,13 @@
     <template #end>
       <Button
         icon="pi pi-cog"
-        @click="isSettingsDialogVisible = true"
         text
+        @click="isSettingsDialogVisible = true"
       />
     </template>
   </Toolbar>
 </template>
 
 <script setup lang="ts">
-const isSettingsDialogVisible = useState('isSettingsDialogVisible', () => false)
+const isSettingsDialogVisible = useSettingsDialogVisibility()
 </script>

@@ -1,5 +1,5 @@
-import { Faculty } from '~/types/faculties'
-import faculties from 'assets/faculties.json'
+import type { Faculty } from '~/types/faculties'
+import faculties from '~/assets/faculties.json'
 
 export const getFaculties = (): Faculty[] => faculties
 
@@ -16,8 +16,8 @@ export const getDepartmentNameByCourseId = (courseId: number): string | undefine
 }
 
 export const getDepartmentNameAndCourseNumberByCourseId = (courseId: number): {
-  departmentName: string,
-  courseNumber: number,
+  departmentName: string
+  courseNumber: number
   courseId: number
 } | undefined => {
   for (const { departments } of getFaculties()) {
@@ -27,7 +27,7 @@ export const getDepartmentNameAndCourseNumberByCourseId = (courseId: number): {
           return {
             departmentName: department.name,
             courseNumber: course.number,
-            courseId: course.id
+            courseId: course.id,
           }
         }
       }

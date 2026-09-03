@@ -1,10 +1,18 @@
 <template>
-  <h3 class="text-3xl font-semibold my-4">Расписание</h3>
-  <h4 v-if="departmentName !== undefined" class="text-xl font-semibold mb-4">
+  <h3 class="text-3xl font-semibold my-4">
+    Расписание
+  </h3>
+  <h4
+    v-if="departmentName !== undefined"
+    class="text-xl font-semibold mb-4"
+  >
     {{ departmentName }}
   </h4>
 
-  <DesktopViewToggleSwitch v-if="width <= 920" v-model="forceDesktopView" />
+  <DesktopViewToggleSwitch
+    v-if="width <= MOBILE_LAYOUT_MAX_WIDTH_PX"
+    v-model="forceDesktopView"
+  />
 
   <BuildingCodeInplace />
   <CardColorInplace />
@@ -30,7 +38,11 @@
     show-gridlines
     :class="settings.textSize"
   >
-    <Column field="period" header="Время" class="w-1/12" />
+    <Column
+      field="period"
+      header="Время"
+      class="w-1/12"
+    />
     <Column
       v-for="{ field, header } in columns"
       :key="field"
@@ -38,131 +50,68 @@
       :header="header"
     >
       <template #body="{ data }">
-        <div v-if="visibleLessons(data[field]).length >= 1">
-          <div
-            v-for="(lesson, index) in visibleLessons(data[field])"
-            class="shadow-md my-2 rounded px-3 py-2 flex justify-between items-start gap-2"
-            :class="[
-              colorsByCourse
-                ? getBackgroundColorByCourseId(lesson.courseId)
-                : getBackgroundColorByLessonType(lesson.type),
-            ]"
-          >
-            <div class="min-w-0">
-              <p v-if="showDepartmentNames" class="font-semibold mb-1">
-                {{ courseIdToDepartmentName[lesson.courseId] }}
-              </p>
-              <p>{{ lesson.name }}</p>
-              <p v-if="settings.isTeacherNamesVisible">
-                {{ lesson.teacherName }}
-              </p>
-              <p v-if="settings.isLocationsVisible">{{ lesson.location }}</p>
-            </div>
-            <div class="flex gap-x-1 shrink-0">
-              <Button
-                :icon="isFavorite(lesson) ? 'pi pi-heart-fill' : 'pi pi-heart'"
-                text
-                rounded
-                size="small"
-                :severity="isFavorite(lesson) ? 'danger' : 'secondary'"
-                title="Избранное"
-                @click="toggleFavorite(lesson)"
-              />
-              <Button
-                icon="pi pi-eye-slash"
-                text
-                rounded
-                size="small"
-                severity="secondary"
-                title="Скрыть урок"
-                @click="toggleHidden(lesson)"
-              />
-            </div>
-          </div>
-        </div>
-        <div v-else>нет данных</div>
+        <LessonCell
+          :lessons="data[field]"
+          :course-id-to-department-name="courseIdToDepartmentName"
+          :show-department-names="showDepartmentNames"
+          :color-class-for="colorClassFor"
+        />
       </template>
     </Column>
   </DataTable>
 </template>
 
 <script setup lang="ts">
-import type { Lesson, PeriodTimetable } from "~/types/timetable";
-import { useWindowSize } from "@vueuse/core";
-import BuildingCodeInplace from "~/components/inplaces/BuildingCodeInplace.vue";
-import CardColorInplace from "~/components/inplaces/CardColorInplace.vue";
-import TextSizeSelect from "~/components/TextSizeSelect.vue";
-import HiddenLessonsDialog from "~/components/dialogs/HiddenLessonsDialog.vue";
-import {
-  getBackgroundColorByLessonType,
-  createColorDispancer
-} from "~/utils/lesson-card";
-import { getLessonKey } from "~/utils/saved-lessons";
-import { useFavoriteLessons, useHiddenLessons } from "~/composables/saved-lessons";
+import type { Lesson, PeriodTimetable } from '~/types/timetable'
+import { MOBILE_LAYOUT_MAX_WIDTH_PX } from '~/composables/timetable-layout'
 
 const props = defineProps<{
-  periodTimetables: PeriodTimetable[];
-  courseIdToDepartmentName: Record<string, string>;
-  departmentName?: string;
-  courseNumber?: number;
-  showDepartmentNames: boolean;
-  colorsByCourse: boolean;
-}>();
+  periodTimetables: PeriodTimetable[]
+  courseIdToDepartmentName: Record<string, string>
+  departmentName?: string
+  showDepartmentNames: boolean
+  colorsByCourse: boolean
+}>()
 
+const getBackgroundColorByCourseId = createColorDispenser()
 
-const getBackgroundColorByCourseId = createColorDispancer()
+const colorClassFor = (lesson: Lesson): string =>
+  props.colorsByCourse
+    ? getBackgroundColorByCourseId(lesson.courseId)
+    : getBackgroundColorByLessonType(lesson.type)
 
-const { settings } = useSettings();
+const { settings } = useSettings()
 
-const { width } = useWindowSize();
+const { width } = useWindowSize()
 
-const forceDesktopView = defineModel<boolean>("forceDesktopView");
+const forceDesktopView = defineModel<boolean>('forceDesktopView')
 
-const { has: isFavorite, toggle: toggleFavorite } = useFavoriteLessons();
-const { has: isHidden, toggle: toggleHidden } = useHiddenLessons();
+const { has: isHidden } = useHiddenLessons()
 
-const isHiddenDialogVisible = ref<boolean>(false);
+const isHiddenDialogVisible = ref<boolean>(false)
 
-const visibleLessons = (lessons: Lesson[] | undefined): Lesson[] =>
-  (lessons ?? []).filter((lesson) => !isHidden(lesson));
-
-const weekdayFields = ["monday", "tuesday", "wednesday", "thursday", "friday"] as const;
+const weekdayFields = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'] as const
 
 const hiddenLessonsInView = computed((): Lesson[] => {
-  const seen = new Map<string, Lesson>();
+  const seen = new Map<string, Lesson>()
   for (const periodTimetable of props.periodTimetables) {
     for (const field of weekdayFields) {
       for (const lesson of periodTimetable[field] ?? []) {
-        const key = getLessonKey(lesson);
+        const key = getLessonKey(lesson)
         if (isHidden(lesson) && !seen.has(key)) {
-          seen.set(key, lesson);
+          seen.set(key, lesson)
         }
       }
     }
   }
-  return [...seen.values()];
-});
+  return [...seen.values()]
+})
 
 const columns = [
-  {
-    field: "monday",
-    header: "Понедельник",
-  },
-  {
-    field: "tuesday",
-    header: "Вторник",
-  },
-  {
-    field: "wednesday",
-    header: "Среда",
-  },
-  {
-    field: "thursday",
-    header: "Четверг",
-  },
-  {
-    field: "friday",
-    header: "Пятница",
-  },
-];
+  { field: 'monday', header: 'Понедельник' },
+  { field: 'tuesday', header: 'Вторник' },
+  { field: 'wednesday', header: 'Среда' },
+  { field: 'thursday', header: 'Четверг' },
+  { field: 'friday', header: 'Пятница' },
+]
 </script>

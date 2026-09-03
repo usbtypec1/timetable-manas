@@ -1,10 +1,16 @@
 <template>
   <Inplace class="my-3">
     <template #display>
-      <Button text icon="pi pi-info-circle" label="Обозначения зданий"/>
+      <Button
+        text
+        icon="pi pi-info-circle"
+        label="Обозначения зданий"
+      />
     </template>
     <template #content>
-      <h5 class="font-semibold text-lg">Обозначения кодов здраний</h5>
+      <h5 class="font-semibold text-lg">
+        Обозначения кодов здраний
+      </h5>
       <p
         v-for="{ code, name } in buildings"
         :key="code"

@@ -1,5 +1,6 @@
 import { ofetch } from 'ofetch'
 import * as cheerio from 'cheerio'
+import type { AnyNode } from 'domhandler'
 
 export interface RawLesson {
   courseId: number
@@ -29,7 +30,7 @@ const getLessonType = (lessonCardCss: Record<string, string> | undefined): numbe
   return lessonTypeByBackgroundColor[lessonCardCss?.['background-color'] ?? '']
 }
 
-const parseLessonCard = (courseId: number, lessonCard: any): RawLesson => {
+const parseLessonCard = (courseId: number, lessonCard: AnyNode): RawLesson => {
   const divHtml = cheerio.load(lessonCard)('div')
   const type = getLessonType(divHtml.css())
 
@@ -44,7 +45,7 @@ const parseLessonCard = (courseId: number, lessonCard: any): RawLesson => {
   }
 }
 
-const parseLessonsColumn = (courseId: number, tableData: any): RawLesson[] => {
+const parseLessonsColumn = (courseId: number, tableData: cheerio.Cheerio<AnyNode>): RawLesson[] => {
   const lessons: RawLesson[] = []
   for (const div of tableData.find('div')) {
     lessons.push(parseLessonCard(courseId, div))
@@ -83,7 +84,8 @@ export const parseTimetablePageHtml = (courseId: number, html: string): RawPerio
 const SOURCE_REQUEST_TIMEOUT_MS = 6000
 
 export const fetchAndParseTimetable = async (courseId: number): Promise<RawPeriodTimetable[]> => {
-  const response = await ofetch('http://timetable.manas.edu.kg/department-printer/' + courseId, {
+  const { manasTimetableBaseUrl } = useRuntimeConfig()
+  const response = await ofetch(manasTimetableBaseUrl + courseId, {
     timeout: SOURCE_REQUEST_TIMEOUT_MS,
   })
   return parseTimetablePageHtml(courseId, response)

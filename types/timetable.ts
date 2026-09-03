@@ -1,8 +1,3 @@
-export interface Period {
-  start: string
-  end: string
-}
-
 export interface Lesson {
   courseId: number
   name: string
@@ -12,7 +7,7 @@ export interface Lesson {
 }
 
 export interface PeriodTimetable {
-  period: Period
+  period: string
   monday: Lesson[]
   tuesday: Lesson[]
   wednesday: Lesson[]

@@ -6,14 +6,16 @@ export default defineEventHandler(async (event) => {
   let courseIds
   if (typeof queryParams.courseId === 'string') {
     courseIds = [parseInt(queryParams.courseId)]
-  } else if (Array.isArray(queryParams.courseId)) {
+  }
+  else if (Array.isArray(queryParams.courseId)) {
     courseIds = queryParams.courseId.map(Number)
-  } else {
-    throw new Error('Invalid query param')
+  }
+  else {
+    throw createError({ statusCode: 400, statusMessage: 'Invalid query param: courseId' })
   }
 
   const settledResponses = await Promise.allSettled(courseIds.map(fetchAndParseTimetable))
-  const responses = settledResponses.filter(isFulfilled).map((result) => result.value)
+  const responses = settledResponses.filter(isFulfilled).map(result => result.value)
 
   return mergeTimetables(responses.flat())
 })

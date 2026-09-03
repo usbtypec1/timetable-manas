@@ -1,24 +1,24 @@
-import type { Weekday } from "~/types/weekdays";
+import type { Weekday } from '~/types/weekdays'
 
 export const weekdayOptions: Weekday[] = [
   {
-    value: "monday",
-    label: "Понедельник",
+    value: 'monday',
+    label: 'Понедельник',
   },
   {
-    value: "tuesday",
-    label: "Вторник",
+    value: 'tuesday',
+    label: 'Вторник',
   },
   {
-    value: "wednesday",
-    label: "Среда",
+    value: 'wednesday',
+    label: 'Среда',
   },
   {
-    value: "thursday",
-    label: "Четверг",
+    value: 'thursday',
+    label: 'Четверг',
   },
   {
-    value: "friday",
-    label: "Пятница",
+    value: 'friday',
+    label: 'Пятница',
   },
-];
+]

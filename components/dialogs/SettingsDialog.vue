@@ -25,15 +25,22 @@
       @click="onClearHistory"
     />
     <div class="flex justify-end gap-3">
-      <Button type="button" label="Отменить" severity="secondary" @click="isVisible = false"></Button>
-      <Button type="button" label="Сохранить" @click="onSaveSettings"/>
+      <Button
+        type="button"
+        label="Отменить"
+        severity="secondary"
+        @click="isVisible = false"
+      />
+      <Button
+        type="button"
+        label="Сохранить"
+        @click="onSaveSettings"
+      />
     </div>
   </Dialog>
 </template>
 
 <script setup lang="ts">
-import ToggleSwitchWithLabel from '~/components/ToggleSwitchWithLabel.vue'
-
 const isVisible = defineModel<boolean>('isVisible')
 
 const { settings, update } = useSettings()

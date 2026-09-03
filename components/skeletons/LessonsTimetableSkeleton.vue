@@ -3,10 +3,11 @@
     <DataTable :value="Array(4)">
       <Column
         v-for="columnName in columns"
+        :key="columnName"
         :header="columnName"
       >
         <template #body>
-          <Skeleton/>
+          <Skeleton />
         </template>
       </Column>
     </DataTable>

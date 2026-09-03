@@ -1,10 +1,17 @@
 <template>
   <Stepper value="1">
     <StepItem value="1">
-      <Step value="1">Факультет</Step>
-      <StepPanel v-slot="{ activateCallback }" value="1">
+      <Step value="1">
+        Факультет
+      </Step>
+      <StepPanel
+        v-slot="{ activateCallback }"
+        value="1"
+      >
         <div class="px-4 py-3 flex flex-col gap-y-4">
-          <p class="text-lg font-semibold">Выберите факультет</p>
+          <p class="text-lg font-semibold">
+            Выберите факультет
+          </p>
           <Listbox
             v-model="selectedFacultyId"
             :options="faculties"
@@ -15,7 +22,7 @@
           <Button
             label="Дальше"
             icon="pi pi-arrow-right"
-            iconPos="right"
+            icon-pos="right"
             :severity="selectedFacultyId ? 'primary' : 'secondary'"
             :disabled="!selectedFacultyId"
             @click="activateCallback('2')"
@@ -24,10 +31,17 @@
       </StepPanel>
     </StepItem>
     <StepItem value="2">
-      <Step value="2">Направление</Step>
-      <StepPanel v-slot="{ activateCallback }" value="2">
+      <Step value="2">
+        Направление
+      </Step>
+      <StepPanel
+        v-slot="{ activateCallback }"
+        value="2"
+      >
         <div class="px-4 py-3 flex flex-col gap-y-4">
-          <p class="text-lg font-semibold">Выберите направление</p>
+          <p class="text-lg font-semibold">
+            Выберите направление
+          </p>
           <Listbox
             v-model="selectedDepartmentId"
             :options="departments"
@@ -59,10 +73,17 @@
       </StepPanel>
     </StepItem>
     <StepItem value="3">
-      <Step value="3">Курс</Step>
-      <StepPanel v-slot="{ activateCallback }" value="3">
+      <Step value="3">
+        Курс
+      </Step>
+      <StepPanel
+        v-slot="{ activateCallback }"
+        value="3"
+      >
         <div class="px-4 py-3 flex flex-col gap-y-4">
-          <p class="text-lg font-semibold">Выберите курс</p>
+          <p class="text-lg font-semibold">
+            Выберите курс
+          </p>
           <Listbox
             v-model="selectedCourseId"
             :options="courses"
@@ -88,14 +109,13 @@
               :severity="selectedCourseId ? 'primary' : 'secondary'"
               :disabled="selectedCourseId === undefined"
               :loading="isLoading"
-              @click="emit('submit', selectedCourseId)"
+              @click="selectedCourseId !== undefined && emit('submit', selectedCourseId)"
             />
           </div>
         </div>
       </StepPanel>
     </StepItem>
   </Stepper>
-
 </template>
 
 <script setup lang="ts">
@@ -108,12 +128,12 @@ const selectedDepartmentId = ref<string>()
 const selectedFacultyId = ref<string>()
 
 const props = defineProps<{
-  faculties: Faculty[],
-  isLoading: boolean,
+  faculties: Faculty[]
+  isLoading: boolean
 }>()
 
 const emit = defineEmits<{
-  submit: [courseId: number],
+  submit: [courseId: number]
 }>()
 
 watch(selectedFacultyId, (): void => {

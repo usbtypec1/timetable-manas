@@ -1,4 +1,4 @@
-export const parseLessonName = (name: string): { code: string; title: string } => {
+export const parseLessonName = (name: string): { code: string, title: string } => {
   const trimmed = (name ?? '').trim()
   const match = trimmed.match(/^(\S+)\s+(.*)$/)
 

@@ -5,7 +5,10 @@
     header="Скрытые уроки"
     class="w-full sm:max-w-md mx-6"
   >
-    <p v-if="lessons.length === 0" class="text-center text-gray-500">
+    <p
+      v-if="lessons.length === 0"
+      class="text-center text-gray-500"
+    >
       Нет скрытых уроков
     </p>
     <div
@@ -14,9 +17,15 @@
       class="flex items-center justify-between gap-3 py-2 border-b border-gray-200 dark:border-gray-700 last:border-b-0"
     >
       <div class="min-w-0">
-        <p class="font-semibold truncate">{{ lesson.name }}</p>
-        <p class="text-sm text-gray-500 truncate">{{ lesson.teacherName }}</p>
-        <p class="text-sm text-gray-500 truncate">{{ lesson.location }}</p>
+        <p class="font-semibold truncate">
+          {{ lesson.name }}
+        </p>
+        <p class="text-sm text-gray-500 truncate">
+          {{ lesson.teacherName }}
+        </p>
+        <p class="text-sm text-gray-500 truncate">
+          {{ lesson.location }}
+        </p>
       </div>
       <Button
         icon="pi pi-eye"
@@ -27,25 +36,28 @@
       />
     </div>
     <div class="flex justify-end mt-4">
-      <Button label="Закрыть" severity="secondary" @click="isVisible = false" />
+      <Button
+        label="Закрыть"
+        severity="secondary"
+        @click="isVisible = false"
+      />
     </div>
   </Dialog>
 </template>
 
 <script setup lang="ts">
-import type { Lesson } from "~/types/timetable";
-import { getLessonKey } from "~/utils/saved-lessons";
-import { useHiddenLessons } from "~/composables/saved-lessons";
+import type { Lesson } from '~/types/timetable'
+import { getLessonKey } from '~/utils/saved-lessons'
 
 defineProps<{
-  lessons: Lesson[];
-}>();
+  lessons: Lesson[]
+}>()
 
-const isVisible = defineModel<boolean>("isVisible");
+const isVisible = defineModel<boolean>('isVisible')
 
-const { remove } = useHiddenLessons();
+const { remove } = useHiddenLessons()
 
 const onUnhide = (lesson: Lesson): void => {
-  remove(getLessonKey(lesson));
-};
+  remove(getLessonKey(lesson))
+}
 </script>

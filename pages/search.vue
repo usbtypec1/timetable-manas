@@ -1,11 +1,11 @@
 <template>
   <div>
-    <Title>Манас | Поиск предметов</Title>
-
-    <h3 class="text-3xl font-semibold mt-4 mb-3">Поиск предметов</h3>
+    <h3 class="text-3xl font-semibold mt-4 mb-3">
+      Поиск предметов
+    </h3>
 
     <IconField class="w-full mb-2">
-      <InputIcon class="pi pi-search"/>
+      <InputIcon class="pi pi-search" />
       <InputText
         v-model="query"
         placeholder="Предмет, код или преподаватель"
@@ -14,7 +14,9 @@
     </IconField>
 
     <div class="flex items-center justify-between gap-3 mb-4 min-h-[2rem]">
-      <p class="text-sm text-surface-500 dark:text-surface-400">{{ statusLabel }}</p>
+      <p class="text-sm text-surface-500 dark:text-surface-400">
+        {{ statusLabel }}
+      </p>
       <Button
         icon="pi pi-refresh"
         text
@@ -33,7 +35,12 @@
       :value="indexingProgress"
       class="mb-4"
     />
-    <Message v-else-if="hasLoadError" severity="warn" :closable="false" class="mb-4">
+    <Message
+      v-else-if="hasLoadError"
+      severity="warn"
+      :closable="false"
+      class="mb-4"
+    >
       Часть курсов не загрузилась, результаты могут быть неполными
     </Message>
 
@@ -41,28 +48,40 @@
       v-if="query.trim().length === 0"
       class="flex flex-col items-center text-center text-surface-400 dark:text-surface-500 py-14 gap-2"
     >
-      <i class="pi pi-search text-4xl"/>
+      <i class="pi pi-search text-4xl" />
       <p>Начните вводить название предмета</p>
     </div>
     <div
       v-else-if="groupedResults.length === 0"
       class="flex flex-col items-center text-center text-surface-400 dark:text-surface-500 py-14 gap-2"
     >
-      <i class="pi pi-inbox text-4xl"/>
+      <i class="pi pi-inbox text-4xl" />
       <p>Ничего не найдено</p>
     </div>
 
-    <div v-else class="flex flex-col gap-3">
+    <div
+      v-else
+      class="flex flex-col gap-3"
+    >
       <div
         v-for="group in groupedResults"
         :key="group.key"
         class="rounded-xl border border-surface-200 dark:border-surface-700 px-4 py-3 transition-shadow hover:shadow-md"
       >
         <div class="flex items-baseline gap-2 flex-wrap mb-1">
-          <Tag v-if="group.code" :value="group.code" severity="secondary"/>
-          <p class="font-semibold">{{ group.title }}</p>
+          <Tag
+            v-if="group.code"
+            :value="group.code"
+            severity="secondary"
+          />
+          <p class="font-semibold">
+            {{ group.title }}
+          </p>
         </div>
-        <p v-if="group.teacherName" class="text-sm text-surface-500 dark:text-surface-400 mb-2">
+        <p
+          v-if="group.teacherName"
+          class="text-sm text-surface-500 dark:text-surface-400 mb-2"
+        >
           {{ group.teacherName }}
         </p>
 
@@ -73,11 +92,14 @@
             class="text-sm flex flex-wrap items-center gap-x-3 gap-y-1 text-surface-600 dark:text-surface-300"
           >
             <span class="inline-flex items-center gap-1">
-              <i class="pi pi-calendar text-xs"/>
+              <i class="pi pi-calendar text-xs" />
               {{ occurrence.weekdayLabel }}, {{ occurrence.period }}
             </span>
-            <span v-if="occurrence.location" class="inline-flex items-center gap-1">
-              <i class="pi pi-map-marker text-xs"/>
+            <span
+              v-if="occurrence.location"
+              class="inline-flex items-center gap-1"
+            >
+              <i class="pi pi-map-marker text-xs" />
               {{ occurrence.location }}
             </span>
             <NuxtLink
@@ -85,7 +107,7 @@
               class="ml-auto inline-flex items-center gap-1 text-primary hover:underline"
             >
               {{ occurrence.departmentName }}, {{ occurrence.courseNumber }} курс
-              <i class="pi pi-arrow-up-right text-xs"/>
+              <i class="pi pi-arrow-up-right text-xs" />
             </NuxtLink>
           </div>
         </div>
@@ -97,10 +119,12 @@
 <script setup lang="ts">
 import { useStorage, StorageSerializers } from '@vueuse/core'
 import faculties from '~/assets/faculties.json'
-import { parseLessonName } from '~/utils/lesson-name'
-import { mapWithConcurrency } from '~/utils/concurrency'
-import { weekdayOptions } from '~/utils/weekdays'
 import type { SearchableLesson } from '~/types/search'
+
+useSeoMeta({
+  title: 'Манас | Поиск предметов',
+  description: 'Поиск предметов по названию, коду или преподавателю среди всех факультетов и направлений.',
+})
 
 interface FetchedLesson {
   courseId: number
@@ -185,11 +209,11 @@ const getAllCourses = (): CourseInfo[] => {
 }
 
 const courses = getAllCourses()
-const courseInfoById = new Map(courses.map((course) => [course.courseId, course]))
+const courseInfoById = new Map(courses.map(course => [course.courseId, course]))
 
 const chunks: number[][] = []
 for (let i = 0; i < courses.length; i += CHUNK_SIZE) {
-  chunks.push(courses.slice(i, i + CHUNK_SIZE).map((course) => course.courseId))
+  chunks.push(courses.slice(i, i + CHUNK_SIZE).map(course => course.courseId))
 }
 
 const toSearchableLessons = (periodTimetables: FetchedPeriodTimetable[]): SearchableLesson[] => {
@@ -262,12 +286,12 @@ const buildIndex = async (force = false): Promise<void> => {
   cachedState.value = state
 
   lessons.value = flattenChunkLessons(state.chunkLessons)
-  loadedChunkCount.value = state.chunkLessons.filter((chunk) => chunk !== null).length
+  loadedChunkCount.value = state.chunkLessons.filter(chunk => chunk !== null).length
   hasLoadError.value = false
 
   const pendingChunkIndexes = chunks
     .map((_, index) => index)
-    .filter((index) => state.chunkLessons[index] === null)
+    .filter(index => state.chunkLessons[index] === null)
 
   if (pendingChunkIndexes.length === 0) {
     isBuildingIndex.value = false
@@ -286,9 +310,11 @@ const buildIndex = async (force = false): Promise<void> => {
       cachedState.value!.chunkLessons[chunkIndex] = chunkLessons
       cachedState.value!.updatedAt = Date.now()
       lessons.value = [...lessons.value, ...chunkLessons]
-    } catch {
+    }
+    catch {
       hasLoadError.value = true
-    } finally {
+    }
+    finally {
       loadedChunkCount.value++
     }
   })
@@ -341,10 +367,10 @@ const groupedResults = computed((): GroupedLesson[] => {
     return []
   }
 
-  const matches = lessons.value.filter((lesson) =>
-    normalize(lesson.code).includes(trimmedQuery) ||
-    normalize(lesson.title).includes(trimmedQuery) ||
-    normalize(lesson.teacherName).includes(trimmedQuery),
+  const matches = lessons.value.filter(lesson =>
+    normalize(lesson.code).includes(trimmedQuery)
+    || normalize(lesson.title).includes(trimmedQuery)
+    || normalize(lesson.teacherName).includes(trimmedQuery),
   )
 
   const groups = new Map<string, GroupedLesson>()

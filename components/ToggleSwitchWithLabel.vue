@@ -18,6 +18,6 @@ const inputId = useId()
 const value = defineModel<boolean>()
 
 defineProps<{
-  label: string,
+  label: string
 }>()
 </script>

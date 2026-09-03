@@ -10,7 +10,10 @@
       class="flex-1 flex flex-col items-center justify-center gap-0.5 py-2 text-xs text-gray-500"
       :style="isActive(item.name) ? { color: 'var(--p-primary-color)' } : undefined"
     >
-      <i :class="item.icon" class="text-xl"/>
+      <i
+        :class="item.icon"
+        class="text-xl"
+      />
       <span>{{ item.label }}</span>
     </NuxtLink>
     <button
@@ -18,7 +21,7 @@
       class="flex-1 flex flex-col items-center justify-center gap-0.5 py-2 text-xs text-gray-500"
       @click="isSettingsDialogVisible = true"
     >
-      <i class="pi pi-cog text-xl"/>
+      <i class="pi pi-cog text-xl" />
       <span>Настройки</span>
     </button>
   </nav>
@@ -26,7 +29,7 @@
 
 <script setup lang="ts">
 const route = useRoute()
-const isSettingsDialogVisible = useState('isSettingsDialogVisible', () => false)
+const isSettingsDialogVisible = useSettingsDialogVisibility()
 
 const items = [
   { name: 'index', icon: 'pi pi-home', label: 'Главная' },

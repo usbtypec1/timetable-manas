@@ -1,4 +1,4 @@
 export interface Weekday {
-  label: string;
-  value: string;
+  label: string
+  value: string
 }
