@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed bottom-5 right-4">
+  <div class="fixed bottom-20 md:bottom-5 right-4">
     <NuxtLink :to="{ name: pageName }">
       <Button
         raised

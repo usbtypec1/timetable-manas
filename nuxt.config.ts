@@ -18,6 +18,10 @@ export default defineNuxtConfig({
       name: 'Manas Timetable',
       short_name: 'Timetable',
       description: 'Timetable app for Manas University\'s students',
+      display: 'standalone',
+      start_url: '/',
+      background_color: '#ffffff',
+      theme_color: '#ffffff',
       icons: [
         {
           'src': 'windows11/SmallTile.scale-100.png',
@@ -499,7 +503,17 @@ export default defineNuxtConfig({
   app: {
     head: {
       charset: 'utf-8',
-      viewport: 'width=device-width, initial-scale=1',
+      viewport: 'width=device-width, initial-scale=1, viewport-fit=cover',
+      meta: [
+        { name: 'theme-color', content: '#ffffff' },
+        { name: 'mobile-web-app-capable', content: 'yes' },
+        { name: 'apple-mobile-web-app-capable', content: 'yes' },
+        { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
+        { name: 'apple-mobile-web-app-title', content: 'Timetable' },
+      ],
+      link: [
+        { rel: 'apple-touch-icon', href: '/ios/180.png' },
+      ],
     },
     pageTransition: { name: 'page', mode: 'out-in' },
   },
