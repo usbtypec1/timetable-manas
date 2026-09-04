@@ -20,6 +20,15 @@
   <TextSizeSelect class="my-4" />
 
   <Button
+    class="w-full mb-4"
+    severity="secondary"
+    outlined
+    icon="pi pi-calendar-plus"
+    label="Экспорт в календарь (.ics)"
+    @click="exportToIcs"
+  />
+
+  <Button
     v-if="hiddenLessonsInView.length > 0"
     class="w-full mb-4"
     severity="secondary"
@@ -87,6 +96,18 @@ const { width } = useWindowSize()
 const forceDesktopView = defineModel<boolean>('forceDesktopView')
 
 const { has: isHidden } = useHiddenLessons()
+
+const { download } = useIcsDownload()
+
+const exportToIcs = (): void => {
+  const icsContent = buildTimetableIcs({
+    periodTimetables: props.periodTimetables,
+    isHidden,
+    courseIdToDepartmentName: props.courseIdToDepartmentName,
+    showDepartmentNames: props.showDepartmentNames,
+  })
+  download(icsContent, 'raspisanie.ics')
+}
 
 const isHiddenDialogVisible = ref<boolean>(false)
 

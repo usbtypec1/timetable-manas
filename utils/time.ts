@@ -1,13 +1,15 @@
-export const getWeekdayNumber = (): number => {
-  // Get current date in UTC
+export const BISHKEK_UTC_OFFSET_MINUTES = 6 * 60
+
+// Returns a Date whose UTC getters reflect the current wall-clock time in Bishkek (GMT+6, no DST)
+export const getBishkekNow = (): Date => {
   const now = new Date()
-
-  // Adjust time to GMT+6
   const utcOffset = now.getTimezoneOffset() // Offset in minutes
-  const gmt6Time = new Date(now.getTime() + (utcOffset + 6 * 60) * 60000)
+  return new Date(now.getTime() + (utcOffset + BISHKEK_UTC_OFFSET_MINUTES) * 60000)
+}
 
+export const getWeekdayNumber = (): number => {
   // Get day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
-  const day = gmt6Time.getUTCDay()
+  const day = getBishkekNow().getUTCDay()
 
   // Convert to the required format
   if (day === 0 || day === 6) {
