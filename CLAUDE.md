@@ -1,0 +1,1 @@
+IMPORTANT: When applicable, prefer using webstorm-index MCP tools for code navigation and refactoring.
