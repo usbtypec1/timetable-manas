@@ -21,10 +21,9 @@
           {{ lesson.location }}
         </p>
       </div>
-      <div class="flex gap-x-1 shrink-0">
+      <div class="flex flex-col gap-y-1 shrink-0">
         <Button
           :icon="isFavorite(lesson) ? 'pi pi-heart-fill' : 'pi pi-heart'"
-          text
           rounded
           size="small"
           :severity="isFavorite(lesson) ? 'danger' : 'secondary'"
@@ -33,7 +32,6 @@
         />
         <Button
           icon="pi pi-eye-slash"
-          text
           rounded
           size="small"
           severity="secondary"
