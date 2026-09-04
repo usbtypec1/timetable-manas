@@ -24,7 +24,13 @@
     outlined
     icon="pi pi-calendar-plus"
     label="Экспорт в календарь (.ics)"
-    @click="exportToIcs"
+    @click="isExportDialogVisible = true"
+  />
+  <ExportToIcsDialog
+    v-model:is-visible="isExportDialogVisible"
+    :period-timetables="periodTimetables"
+    :course-id-to-department-name="courseIdToDepartmentName"
+    :show-department-names="showDepartmentNames"
   />
 
   <Button
@@ -103,17 +109,7 @@ const weekdays = ref<Weekday[]>([weekdayOptions[getWeekdayNumber()]])
 
 const { has: isHidden } = useHiddenLessons()
 
-const { download } = useIcsDownload()
-
-const exportToIcs = (): void => {
-  const icsContent = buildTimetableIcs({
-    periodTimetables: props.periodTimetables,
-    isHidden,
-    courseIdToDepartmentName: props.courseIdToDepartmentName,
-    showDepartmentNames: props.showDepartmentNames,
-  })
-  download(icsContent, 'raspisanie.ics')
-}
+const isExportDialogVisible = ref<boolean>(false)
 
 const isHiddenDialogVisible = ref<boolean>(false)
 

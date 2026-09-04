@@ -94,16 +94,33 @@ const hashString = (input: string): string => {
   return (hash >>> 0).toString(16)
 }
 
+export const countLessons = (
+  periodTimetables: PeriodTimetable[],
+  predicate: (lesson: Lesson) => boolean,
+): number => {
+  let count = 0
+  for (const periodTimetable of periodTimetables) {
+    for (const weekdayField of weekdayFields) {
+      for (const lesson of periodTimetable[weekdayField]) {
+        if (predicate(lesson)) {
+          count++
+        }
+      }
+    }
+  }
+  return count
+}
+
 export interface BuildTimetableIcsOptions {
   periodTimetables: PeriodTimetable[]
-  isHidden: (lesson: Lesson) => boolean
+  shouldIncludeLesson: (lesson: Lesson) => boolean
   courseIdToDepartmentName: Record<string, string>
   showDepartmentNames: boolean
 }
 
 export const buildTimetableIcs = ({
   periodTimetables,
-  isHidden,
+  shouldIncludeLesson,
   courseIdToDepartmentName,
   showDepartmentNames,
 }: BuildTimetableIcsOptions): string => {
@@ -126,7 +143,7 @@ export const buildTimetableIcs = ({
 
     for (const weekdayField of weekdayFields) {
       for (const lesson of periodTimetable[weekdayField]) {
-        if (isHidden(lesson)) {
+        if (!shouldIncludeLesson(lesson)) {
           continue
         }
 
