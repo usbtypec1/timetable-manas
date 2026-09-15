@@ -1,5 +1,26 @@
 <template>
-  <div>
+  <div
+    v-if="!SEARCH_ENABLED"
+    class="flex flex-col items-center text-center py-20 gap-4"
+  >
+    <i class="pi pi-telegram text-5xl text-primary" />
+    <h3 class="text-2xl font-semibold">
+      Поиск предметов переехал в Telegram-бота
+    </h3>
+    <p class="text-surface-500 dark:text-surface-400 max-w-md">
+      Ищите предметы, коды и преподавателей прямо в боте — это быстрее и всегда под рукой.
+    </p>
+    <Button
+      as="a"
+      href="https://t.me/manashelper"
+      target="_blank"
+      rel="noopener"
+      icon="pi pi-telegram"
+      label="Открыть бота"
+    />
+  </div>
+
+  <div v-else>
     <h3 class="text-3xl font-semibold mt-4 mb-3">
       Поиск предметов
     </h3>
@@ -32,7 +53,7 @@
 
     <ProgressBar
       v-if="isBuildingIndex"
-      :value="indexingProgress"
+      mode="indeterminate"
       class="mb-4"
     />
     <Message
@@ -118,7 +139,6 @@
 
 <script setup lang="ts">
 import { useStorage, StorageSerializers } from '@vueuse/core'
-import faculties from '~/assets/faculties.json'
 import type { SearchableLesson } from '~/types/search'
 
 useSeoMeta({
@@ -126,29 +146,9 @@ useSeoMeta({
   description: 'Поиск предметов по названию, коду или преподавателю среди всех факультетов и направлений.',
 })
 
-interface FetchedLesson {
-  courseId: number
-  name: string
-  teacherName: string
-  location: string
-  type: number
-}
-
-interface FetchedPeriodTimetable {
-  period: string
-  monday: FetchedLesson[]
-  tuesday: FetchedLesson[]
-  wednesday: FetchedLesson[]
-  thursday: FetchedLesson[]
-  friday: FetchedLesson[]
-}
-
-interface CourseInfo {
-  courseId: number
-  courseNumber: number
-  departmentName: string
-  facultyName: string
-}
+// Disabled: this feature drove the Vercel edge request spike. Kept in place (unused) rather
+// than deleted, in case it's revisited later. Users are redirected to the Telegram bot instead.
+const SEARCH_ENABLED = false
 
 interface Occurrence {
   key: string
@@ -172,153 +172,72 @@ interface GroupedLesson {
 interface CachedState {
   version: number
   updatedAt: number
-  chunkLessons: (SearchableLesson[] | null)[]
+  lessons: SearchableLesson[]
 }
 
-const WEEKDAY_KEYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'] as const
-// Kept small on purpose: each chunk is fetched in a single serverless request,
-// and Vercel kills the function after 10s — a small chunk plus a per-course
-// timeout in fetchAndParseTimetable keeps every request safely under that.
-const CHUNK_SIZE = 4
-const CHUNK_CONCURRENCY = 4
-const CACHE_MAX_AGE_MS = 1000 * 60 * 60 * 12
-const CACHE_VERSION = 2
-const STORAGE_KEY = 'search-index-cache-v2'
-
-const weekdayToLabel: Record<string, string> = Object.fromEntries(
-  weekdayOptions.map(({ value, label }) => [value, label]),
-)
-
-const getAllCourses = (): CourseInfo[] => {
-  const courses: CourseInfo[] = []
-
-  for (const faculty of faculties) {
-    for (const department of faculty.departments) {
-      for (const course of department.courses) {
-        courses.push({
-          courseId: course.id,
-          courseNumber: course.number,
-          departmentName: department.name,
-          facultyName: faculty.name,
-        })
-      }
-    }
-  }
-
-  return courses
-}
-
-const courses = getAllCourses()
-const courseInfoById = new Map(courses.map(course => [course.courseId, course]))
-
-const chunks: number[][] = []
-for (let i = 0; i < courses.length; i += CHUNK_SIZE) {
-  chunks.push(courses.slice(i, i + CHUNK_SIZE).map(course => course.courseId))
-}
-
-const toSearchableLessons = (periodTimetables: FetchedPeriodTimetable[]): SearchableLesson[] => {
-  const result: SearchableLesson[] = []
-
-  for (const periodTimetable of periodTimetables) {
-    for (const weekday of WEEKDAY_KEYS) {
-      for (const lesson of periodTimetable[weekday] ?? []) {
-        const course = courseInfoById.get(lesson.courseId)
-        if (!course) {
-          continue
-        }
-
-        const { code, title } = parseLessonName(lesson.name)
-
-        result.push({
-          code,
-          title,
-          teacherName: lesson.teacherName,
-          location: lesson.location,
-          type: lesson.type,
-          weekday,
-          weekdayLabel: weekdayToLabel[weekday],
-          period: periodTimetable.period,
-          courseId: course.courseId,
-          courseNumber: course.courseNumber,
-          departmentName: course.departmentName,
-          facultyName: course.facultyName,
-        })
-      }
-    }
-  }
-
-  return result
-}
+// The full catalogue is built once server-side (see /api/search-index) and cached at the
+// edge for a few hours, so this is just a light client-side cache on top of that to avoid
+// re-fetching on every visit within the same browser.
+const CACHE_MAX_AGE_MS = 1000 * 60 * 60
+const CACHE_VERSION = 3
+const STORAGE_KEY = 'search-index-cache-v3'
 
 const query = ref<string>('')
 const lessons = ref<SearchableLesson[]>([])
 const isBuildingIndex = ref<boolean>(true)
 const hasLoadError = ref<boolean>(false)
-const loadedChunkCount = ref<number>(0)
-const totalChunkCount = chunks.length
-
-const indexingProgress = computed((): number =>
-  totalChunkCount === 0 ? 100 : Math.round((loadedChunkCount.value / totalChunkCount) * 100))
 
 const cachedState = useStorage<CachedState | null>(STORAGE_KEY, null, undefined, {
   serializer: StorageSerializers.object,
 })
 
-const createEmptyState = (): CachedState => ({
-  version: CACHE_VERSION,
-  updatedAt: Date.now(),
-  chunkLessons: chunks.map(() => null),
-})
-
 const isReusableState = (state: CachedState | null): state is CachedState => {
   return !!state
     && state.version === CACHE_VERSION
-    && state.chunkLessons.length === chunks.length
     && Date.now() - state.updatedAt < CACHE_MAX_AGE_MS
 }
 
-const flattenChunkLessons = (chunkLessons: (SearchableLesson[] | null)[]): SearchableLesson[] => {
-  return chunkLessons.filter((chunk): chunk is SearchableLesson[] => chunk !== null).flat()
-}
-
-const buildIndex = async (force = false): Promise<void> => {
-  const state = !force && isReusableState(cachedState.value) ? cachedState.value! : createEmptyState()
-  cachedState.value = state
-
-  lessons.value = flattenChunkLessons(state.chunkLessons)
-  loadedChunkCount.value = state.chunkLessons.filter(chunk => chunk !== null).length
-  hasLoadError.value = false
-
-  const pendingChunkIndexes = chunks
-    .map((_, index) => index)
-    .filter(index => state.chunkLessons[index] === null)
-
-  if (pendingChunkIndexes.length === 0) {
+const loadIndex = async (force = false): Promise<void> => {
+  if (!force && isReusableState(cachedState.value)) {
+    lessons.value = cachedState.value.lessons
     isBuildingIndex.value = false
     return
   }
 
   isBuildingIndex.value = true
+  hasLoadError.value = false
 
-  await mapWithConcurrency(pendingChunkIndexes, CHUNK_CONCURRENCY, async (chunkIndex) => {
-    try {
-      const periodTimetables = await $fetch<FetchedPeriodTimetable[]>('/api/timetable', {
-        query: { courseId: chunks[chunkIndex] },
-      })
-      const chunkLessons = toSearchableLessons(periodTimetables)
+  const settledChunks = await Promise.allSettled(
+    searchIndexChunks.map((_, chunkIndex) =>
+      $fetch<SearchableLesson[]>('/api/search-index', { query: { chunk: chunkIndex } }),
+    ),
+  )
 
-      cachedState.value!.chunkLessons[chunkIndex] = chunkLessons
-      cachedState.value!.updatedAt = Date.now()
-      lessons.value = [...lessons.value, ...chunkLessons]
-    }
-    catch {
-      hasLoadError.value = true
-    }
-    finally {
-      loadedChunkCount.value++
-    }
-  })
+  const fetchedLessons: SearchableLesson[] = []
+  let anyChunkFailed = false
 
+  for (const result of settledChunks) {
+    if (result.status === 'fulfilled') {
+      fetchedLessons.push(...result.value)
+    }
+    else {
+      anyChunkFailed = true
+    }
+  }
+
+  if (fetchedLessons.length > 0) {
+    lessons.value = fetchedLessons
+    cachedState.value = {
+      version: CACHE_VERSION,
+      updatedAt: Date.now(),
+      lessons: fetchedLessons,
+    }
+  }
+  else if (cachedState.value?.lessons) {
+    lessons.value = cachedState.value.lessons
+  }
+
+  hasLoadError.value = anyChunkFailed
   isBuildingIndex.value = false
 }
 
@@ -326,11 +245,13 @@ const refreshIndex = async (): Promise<void> => {
   if (isBuildingIndex.value) {
     return
   }
-  await buildIndex(true)
+  await loadIndex(true)
 }
 
 onMounted(async () => {
-  await buildIndex()
+  if (SEARCH_ENABLED) {
+    await loadIndex()
+  }
 })
 
 const formatRelativeTime = (timestamp: number): string => {
@@ -353,7 +274,7 @@ const formatRelativeTime = (timestamp: number): string => {
 
 const statusLabel = computed((): string => {
   if (isBuildingIndex.value) {
-    return `Собираем базу: ${loadedChunkCount.value}/${totalChunkCount}`
+    return 'Собираем базу предметов…'
   }
   const updatedAt = cachedState.value?.updatedAt
   return updatedAt ? `Обновлено ${formatRelativeTime(updatedAt)}` : ''
