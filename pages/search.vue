@@ -8,11 +8,11 @@
       Поиск предметов переехал в Telegram-бота
     </h3>
     <p class="text-surface-500 dark:text-surface-400 max-w-md">
-      Ищите предметы, коды и преподавателей прямо в боте — это быстрее и всегда под рукой.
+      В связи с высокой нагрузкой на сайт (а кошелек у меня не резиновый), поиск предметов временно переехал в Telegram-бота. Скоро верну обратно как придумаю решение.
     </p>
     <Button
       as="a"
-      href="https://t.me/manashelper"
+      href="https://t.me/manas_helper_bot"
       target="_blank"
       rel="noopener"
       icon="pi pi-telegram"
