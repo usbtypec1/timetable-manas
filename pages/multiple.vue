@@ -52,6 +52,7 @@
 </template>
 
 <script setup lang="ts">
+import Message from 'primevue/message'
 import faculties from '~/assets/faculties.json'
 import type { Department } from '~/types/departments'
 import type { PeriodTimetable } from '~/types/timetable'

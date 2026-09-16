@@ -9,5 +9,7 @@
 </template>
 
 <script setup lang="ts">
+import ToggleSwitch from 'primevue/toggleswitch'
+
 const forceDesktopView = defineModel<boolean>()
 </script>

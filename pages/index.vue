@@ -16,6 +16,8 @@
 </template>
 
 <script setup lang="ts">
+import Button from 'primevue/button'
+
 useSeoMeta({
   title: 'Манас | Расписание',
   description: 'Улучшенное расписание университета Манас: избранные уроки и быстрый доступ к недавним курсам.',

@@ -15,6 +15,10 @@
 </template>
 
 <script setup>
+import Column from 'primevue/column'
+import DataTable from 'primevue/datatable'
+import Skeleton from 'primevue/skeleton'
+
 const columns = [
   'Время',
   'Уроки',

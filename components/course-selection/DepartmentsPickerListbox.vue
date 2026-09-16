@@ -25,6 +25,8 @@
 </template>
 
 <script setup lang="ts">
+import Button from 'primevue/button'
+import Listbox from 'primevue/listbox'
 import type { Department } from '~/types/departments'
 import type { Faculty } from '~/types/faculties'
 

@@ -32,6 +32,7 @@
 </template>
 
 <script setup lang="ts">
+import Button from 'primevue/button'
 import type { SavedLessonEntry } from '~/composables/saved-lessons'
 import type { Lesson } from '~/types/timetable'
 

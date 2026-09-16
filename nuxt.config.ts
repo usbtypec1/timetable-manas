@@ -13,6 +13,19 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
   ],
   components: [{ path: '~/components', pathPrefix: false }],
+  vite: {
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: (id) => {
+            if (/node_modules\/(primevue|@primevue|@primeuix)\//.test(id)) {
+              return 'primevue'
+            }
+          },
+        },
+      },
+    },
+  },
   tailwindcss: {
     cssPath: '~/assets/css/main.css',
   },
@@ -28,6 +41,16 @@ export default defineNuxtConfig({
     manasTimetableBaseUrl: 'http://timetable.manas.edu.kg/department-printer/',
   },
   primevue: {
+    autoImport: false,
+    components: {
+      include: [],
+    },
+    directives: {
+      exclude: '*',
+    },
+    composables: {
+      exclude: '*',
+    },
     options: {
       theme: {
         preset: Aura,

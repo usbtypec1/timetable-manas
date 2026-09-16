@@ -10,6 +10,8 @@
 </template>
 
 <script setup lang="ts">
+import Button from 'primevue/button'
+
 defineProps<{
   departmentName: string
   courseNumber: number

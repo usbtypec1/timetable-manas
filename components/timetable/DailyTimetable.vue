@@ -83,6 +83,9 @@
 </template>
 
 <script setup lang="ts">
+import Button from 'primevue/button'
+import Column from 'primevue/column'
+import DataTable from 'primevue/datatable'
 import type { Lesson, PeriodTimetable } from '~/types/timetable'
 import type { Weekday } from '~/types/weekdays'
 

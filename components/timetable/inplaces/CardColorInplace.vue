@@ -20,3 +20,8 @@
     </template>
   </Inplace>
 </template>
+
+<script setup lang="ts">
+import Button from 'primevue/button'
+import Inplace from 'primevue/inplace'
+</script>

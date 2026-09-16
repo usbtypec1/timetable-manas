@@ -77,6 +77,9 @@
 </template>
 
 <script setup lang="ts">
+import Button from 'primevue/button'
+import Column from 'primevue/column'
+import DataTable from 'primevue/datatable'
 import type { Lesson, PeriodTimetable } from '~/types/timetable'
 import { MOBILE_LAYOUT_MAX_WIDTH_PX } from '~/composables/timetable-layout'
 

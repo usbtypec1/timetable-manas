@@ -22,6 +22,9 @@
 </template>
 
 <script setup lang="ts">
+import Button from 'primevue/button'
+import Inplace from 'primevue/inplace'
+
 const buildings: { code: string, name: string }[] = [
   { code: 'İİBF', name: 'здание факультета экономики' },
   { code: 'MFFB', name: 'здание инженерного факультета' },

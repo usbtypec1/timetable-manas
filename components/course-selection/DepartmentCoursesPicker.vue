@@ -36,6 +36,9 @@
 </template>
 
 <script setup lang="ts">
+import Button from 'primevue/button'
+import Checkbox from 'primevue/checkbox'
+import Panel from 'primevue/panel'
 import type { Department } from '~/types/departments'
 
 const props = defineProps<{

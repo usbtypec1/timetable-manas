@@ -119,6 +119,12 @@
 </template>
 
 <script setup lang="ts">
+import Button from 'primevue/button'
+import Listbox from 'primevue/listbox'
+import Step from 'primevue/step'
+import StepItem from 'primevue/stepitem'
+import StepPanel from 'primevue/steppanel'
+import Stepper from 'primevue/stepper'
 import type { Course } from '~/types/courses'
 import type { Department } from '~/types/departments'
 import type { Faculty } from '~/types/faculties'

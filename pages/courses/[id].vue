@@ -39,6 +39,7 @@
 </template>
 
 <script setup lang="ts">
+import Message from 'primevue/message'
 import type { PeriodTimetable } from '~/types/timetable'
 import { courseIdToDepartmentName } from '~/utils/departments'
 

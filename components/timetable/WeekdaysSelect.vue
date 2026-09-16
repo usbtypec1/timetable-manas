@@ -9,6 +9,7 @@
 </template>
 
 <script setup lang="ts">
+import MultiSelect from 'primevue/multiselect'
 import type { Weekday } from '~/types/weekdays'
 import { weekdayOptions } from '~/utils/weekdays'
 

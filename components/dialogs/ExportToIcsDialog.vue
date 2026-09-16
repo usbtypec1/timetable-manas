@@ -68,6 +68,10 @@
 </template>
 
 <script setup lang="ts">
+import Button from 'primevue/button'
+import Dialog from 'primevue/dialog'
+import Message from 'primevue/message'
+import RadioButton from 'primevue/radiobutton'
 import type { Lesson, PeriodTimetable } from '~/types/timetable'
 
 const props = defineProps<{

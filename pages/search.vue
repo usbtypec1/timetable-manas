@@ -139,6 +139,13 @@
 
 <script setup lang="ts">
 import { useStorage, StorageSerializers } from '@vueuse/core'
+import Button from 'primevue/button'
+import IconField from 'primevue/iconfield'
+import InputIcon from 'primevue/inputicon'
+import InputText from 'primevue/inputtext'
+import Message from 'primevue/message'
+import ProgressBar from 'primevue/progressbar'
+import Tag from 'primevue/tag'
 import type { SearchableLesson } from '~/types/search'
 
 useSeoMeta({

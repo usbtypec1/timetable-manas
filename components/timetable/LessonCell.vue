@@ -47,6 +47,7 @@
 </template>
 
 <script setup lang="ts">
+import Button from 'primevue/button'
 import type { Lesson } from '~/types/timetable'
 import { getLessonKey } from '~/utils/saved-lessons'
 

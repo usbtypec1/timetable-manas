@@ -14,6 +14,8 @@
 </template>
 
 <script setup lang="ts">
+import ToggleSwitch from 'primevue/toggleswitch'
+
 const inputId = useId()
 const value = defineModel<boolean>()
 

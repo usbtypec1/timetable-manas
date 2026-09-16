@@ -14,6 +14,7 @@
 </template>
 
 <script setup lang="ts">
+import SelectButton from 'primevue/selectbutton'
 import type { TextSize } from '~/types/text-sizes'
 
 const { settings, update: updateSettings } = useSettings()
